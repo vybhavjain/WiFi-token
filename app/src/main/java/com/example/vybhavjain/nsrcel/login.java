@@ -31,7 +31,7 @@ public class login extends AppCompatActivity {
     private StringRequest request;
     String password , type1;
     int guest;
-    EditText name , phonenumber;
+    EditText name , phonenumber , email ;   // added email
     Button b;
 
     @Override
@@ -40,6 +40,7 @@ public class login extends AppCompatActivity {
         setContentView(R.layout.login);
         name = (EditText) findViewById(R.id.myname);
         phonenumber = (EditText) findViewById(R.id.myphone);
+        email = (EditText) findViewById(R.id.email);  // edit text needed
         b = (Button) findViewById(R.id.submit);
         requestQueue = Volley.newRequestQueue(this);
         sharedpreferences = getSharedPreferences("Count", Context.MODE_PRIVATE);
@@ -52,6 +53,8 @@ public class login extends AppCompatActivity {
                 final String myname = name.getText().toString();
                 Log.e( myname,"onClick: name");
                 final String myphone = phonenumber.getText().toString();
+                final String emailID = email.getText().toString();
+                Log.e( emailID ,"onClick: email");
                 int flag = 0;
                 final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
 
@@ -88,6 +91,7 @@ public class login extends AppCompatActivity {
                         hashMap.put("name" , myname);
                         hashMap.put("phonenumber" , myphone);
                         hashMap.put("id" , id);
+                        hashMap.put("email", emailID);  // added email
 
 
                         return hashMap;
@@ -106,13 +110,19 @@ public class login extends AppCompatActivity {
                 password = String.valueOf(random.nextInt(100000) + 0);
                 Log.e( password,"onClick: password" );
                 Intent intent = new Intent(login.this , Ticket.class);
-                intent.putExtra("Password" , password);
-                intent.putExtra("Username" , myname);
-                intent.putExtra("type" , type1);
-                intent.putExtra("count" , name_count);
-                Log.e(  name_count  , "onClick: count" );
-                startActivity(intent);
-
+                if(email.length() == 0||name.length() == 0||phonenumber.length() == 0)
+                {
+                 Toast.makeText(getApplicationContext(),"Please fill all fields",Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    intent.putExtra("Password", password);
+                    intent.putExtra("Username", myname);
+                    intent.putExtra("type", type1);
+                    intent.putExtra("count", name_count);
+                    Log.e(name_count, "onClick: count");
+                    startActivity(intent);
+                }
             }
         });
 
