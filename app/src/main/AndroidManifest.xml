@@ -21,6 +21,9 @@
         <activity android:name=".Ticket"
         android:label="Nsrcel"
         ></activity>
+        <activity android:name=".otp"
+            android:label="Nsrcel"
+            ></activity>
         <activity android:name=".login"
             android:label="Nsrcel"
             ></activity>

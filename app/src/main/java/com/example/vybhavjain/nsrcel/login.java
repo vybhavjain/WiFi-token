@@ -110,7 +110,7 @@ public class login extends AppCompatActivity {
                 Random random = new Random();
                 password = String.valueOf(random.nextInt(100000) + 0);
                 Log.e( password,"onClick: password" );
-                Intent intent = new Intent(login.this , Ticket.class);
+                Intent intent = new Intent(login.this , otp.class);
                 if(email.length() == 0||name.length() == 0||phonenumber.length() == 0 || reference.length() ==0)
                 {
                  Toast.makeText(getApplicationContext(),"Please fill all fields",Toast.LENGTH_LONG).show();
