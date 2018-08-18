@@ -31,7 +31,7 @@ public class login extends AppCompatActivity {
     private StringRequest request;
     String password , type1;
     int guest;
-    EditText name , phonenumber , email ;   // added email
+    EditText name , phonenumber , email , reference;   // added email, refered person
     Button b;
 
     @Override
@@ -41,6 +41,7 @@ public class login extends AppCompatActivity {
         name = (EditText) findViewById(R.id.myname);
         phonenumber = (EditText) findViewById(R.id.myphone);
         email = (EditText) findViewById(R.id.email);  // edit text needed
+        reference = (EditText) findViewById(R.id.reference); //  edit text needed
         b = (Button) findViewById(R.id.submit);
         requestQueue = Volley.newRequestQueue(this);
         sharedpreferences = getSharedPreferences("Count", Context.MODE_PRIVATE);
@@ -56,50 +57,50 @@ public class login extends AppCompatActivity {
                 final String emailID = email.getText().toString();
                 Log.e( emailID ,"onClick: email");
                 int flag = 0;
+                final String myreference = reference.getText().toString();  // added new reference
                 final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
 
-                request = new StringRequest(Request.Method.POST, URL_guest , new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
+                if(email.length() != 0 && name.length() != 0 && phonenumber.length() != 0 && reference.length() !=0) {
+                    request = new StringRequest(Request.Method.POST, URL_guest, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
 
-                        try {
-                            String flag = response;
+                            try {
+                                String flag = response;
 
 
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
+
                         }
 
 
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
 
-                    }
-
-
-
-
-
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        HashMap<String, String> hashMap = new HashMap<String, String>();
-                        hashMap.put("name" , myname);
-                        hashMap.put("phonenumber" , myphone);
-                        hashMap.put("id" , id);
-                        hashMap.put("email", emailID);  // added email
+                        }
+                    }) {
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            HashMap<String, String> hashMap = new HashMap<String, String>();
+                            hashMap.put("name", myname);
+                            hashMap.put("phonenumber", myphone);
+                            hashMap.put("id", id);
+                            hashMap.put("email", emailID);  // added email
+                            hashMap.put("reference", myreference);  // added refernce
 
 
-                        return hashMap;
+                            return hashMap;
 
-                    }
-                };
+                        }
+                    };
 
-                requestQueue.add(request);
+
+                    requestQueue.add(request);
+                }
                 guest += 1;
                 editor.putString("count_var", String.valueOf(guest));
                 editor.commit();
@@ -110,7 +111,7 @@ public class login extends AppCompatActivity {
                 password = String.valueOf(random.nextInt(100000) + 0);
                 Log.e( password,"onClick: password" );
                 Intent intent = new Intent(login.this , Ticket.class);
-                if(email.length() == 0||name.length() == 0||phonenumber.length() == 0)
+                if(email.length() == 0||name.length() == 0||phonenumber.length() == 0 || reference.length() ==0)
                 {
                  Toast.makeText(getApplicationContext(),"Please fill all fields",Toast.LENGTH_LONG).show();
                 }
