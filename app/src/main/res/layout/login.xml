@@ -15,7 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="155dp"
-        android:text="Name" />
+        android:text="Name"
+        android:layout_marginLeft="10dp"/>
 
     <EditText
         android:id="@+id/myname"
@@ -28,7 +29,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/myname"
-        android:text="PhoneNumber" />
+        android:text="PhoneNumber"
+        android:layout_marginLeft="10dp"/>
 
     <EditText
         android:id="@+id/myphone"
@@ -41,7 +43,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/myphone"
-        android:text="Email" />
+        android:text="Email"
+        android:layout_marginLeft="10dp"/>
 
     <EditText
         android:id="@+id/email"
@@ -55,7 +58,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/email"
-        android:text="reference" />
+        android:text="reference"
+        android:layout_marginLeft="10dp"/>
 
     <EditText
         android:id="@+id/reference"
