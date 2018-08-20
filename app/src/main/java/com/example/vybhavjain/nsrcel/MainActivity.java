@@ -71,30 +71,30 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                        JSONArray obj = null;
-                        try {
-                            obj = (JSONArray) (jsonArray.get("user"));
-                            namesarray = new String[obj.length()];
-                            phonenumberarray = new String[obj.length()];
-                            for (int j = 0; j < obj.length(); j++) {
-                                JSONObject jsonObject = null;
-                                try {
-                                    jsonObject = (JSONObject) (obj.get(j));
-                                    String name = jsonObject.optString("name");
-                                    String phonenumberget = jsonObject.optString("phone_number");
-                                    namesarray[j] = name;
-                                    phonenumberarray[j] = phonenumberget;
-                                    Log.e( namesarray[j],"onResponse: name" );
+                    JSONArray obj = null;
+                    try {
+                        obj = (JSONArray) (jsonArray.get("user"));
+                        namesarray = new String[obj.length()];
+                        phonenumberarray = new String[obj.length()];
+                        for (int j = 0; j < obj.length(); j++) {
+                            JSONObject jsonObject = null;
+                            try {
+                                jsonObject = (JSONObject) (obj.get(j));
+                                String name = jsonObject.optString("name");
+                                String phonenumberget = jsonObject.optString("phone_number");
+                                namesarray[j] = name;
+                                phonenumberarray[j] = phonenumberget;
+                                Log.e( namesarray[j],"onResponse: name" );
 
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
 
 

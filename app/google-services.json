@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "67488330912-lmr8p66nn3rhd6aboend67kvfa4jquuq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vybhavjain.nsrcel",
+            "certificate_hash": "8ecde6b5b30811459a2331b1200540e868aad37d"
+          }
+        },
+        {
           "client_id": "67488330912-3svrqpnpkim4bg7pls1h0f5uomiotnr3.apps.googleusercontent.com",
           "client_type": 3
         }

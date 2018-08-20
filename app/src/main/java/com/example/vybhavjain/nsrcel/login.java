@@ -39,7 +39,7 @@ public class login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         name = (EditText) findViewById(R.id.myname);
-        phonenumber = (EditText) findViewById(R.id.myphone);
+        //phonenumber = (EditText) findViewById(R.id.myphone);
         email = (EditText) findViewById(R.id.email);  // edit text needed
         reference = (EditText) findViewById(R.id.reference); //  edit text needed
         b = (Button) findViewById(R.id.submit);
@@ -53,14 +53,14 @@ public class login extends AppCompatActivity {
             public void onClick(View view) {
                 final String myname = name.getText().toString();
                 Log.e( myname,"onClick: name");
-                final String myphone = phonenumber.getText().toString();
+                //final String myphone = phonenumber.getText().toString();
                 final String emailID = email.getText().toString();
                 Log.e( emailID ,"onClick: email");
                 int flag = 0;
                 final String myreference = reference.getText().toString();  // added new reference
-                final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
+              //  final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
 
-                if(email.length() != 0 && name.length() != 0 && phonenumber.length() != 0 && reference.length() !=0) {
+           /*     if(email.length() != 0 && name.length() != 0 && reference.length() !=0) {
                     request = new StringRequest(Request.Method.POST, URL_guest, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -87,7 +87,7 @@ public class login extends AppCompatActivity {
                         protected Map<String, String> getParams() throws AuthFailureError {
                             HashMap<String, String> hashMap = new HashMap<String, String>();
                             hashMap.put("name", myname);
-                            hashMap.put("phonenumber", myphone);
+                           // hashMap.put("phonenumber", myphone);
                             hashMap.put("id", id);
                             hashMap.put("email", emailID);  // added email
                             hashMap.put("reference", myreference);  // added refernce
@@ -100,7 +100,9 @@ public class login extends AppCompatActivity {
 
 
                     requestQueue.add(request);
+
                 }
+                */
                 guest += 1;
                 editor.putString("count_var", String.valueOf(guest));
                 editor.commit();
@@ -111,7 +113,7 @@ public class login extends AppCompatActivity {
                 password = String.valueOf(random.nextInt(100000) + 0);
                 Log.e( password,"onClick: password" );
                 Intent intent = new Intent(login.this , otp.class);
-                if(email.length() == 0||name.length() == 0||phonenumber.length() == 0 || reference.length() ==0)
+                if(email.length() == 0||name.length() == 0 || reference.length() ==0)
                 {
                  Toast.makeText(getApplicationContext(),"Please fill all fields",Toast.LENGTH_LONG).show();
                 }
@@ -121,6 +123,8 @@ public class login extends AppCompatActivity {
                     intent.putExtra("Username", myname);
                     intent.putExtra("type", type1);
                     intent.putExtra("count", name_count);
+                    intent.putExtra("email", emailID);
+                    intent.putExtra("reference", myreference);
                     Log.e(name_count, "onClick: count");
                     startActivity(intent);
                 }

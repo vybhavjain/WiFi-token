@@ -11,6 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -19,7 +26,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 public class otp extends AppCompatActivity {
 
@@ -27,11 +41,20 @@ public class otp extends AppCompatActivity {
     EditText phonenumber;
     Button generate_otp;
     Button verify_otp;
-    String password, username, type, name_count;
+    String password, username, type, name_count , password_real;
+    int password_real1;
     FirebaseAuth auth;
     private String verificationCode;
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallback;
-
+    final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
+    String name, emailID, reference;
+    private RequestQueue requestQueue;
+    private StringRequest request;
+    JSONObject jsonObject;
+    String phonenumber_real = "";
+    String[] tokenarray;
+    private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
+    private static final String token_url = "https://script.google.com/macros/s/AKfycbyXttNyrNjD1emRZA8jFK8s6i_V-Fs7dlOBHjdWrixZZ54AdCfd/exec";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +69,10 @@ public class otp extends AppCompatActivity {
         username = getIntent().getStringExtra("Username");
         type = getIntent().getStringExtra("type");
         name_count = getIntent().getStringExtra("count");
+        reference = getIntent().getStringExtra("reference");
+        Log.e(reference, "onCreate: reference" );
+        emailID = getIntent().getStringExtra("email");
+        requestQueue = Volley.newRequestQueue(this);
 
 
         auth = FirebaseAuth.getInstance();
@@ -69,18 +96,86 @@ public class otp extends AppCompatActivity {
 
         };
 
+        request = new StringRequest(Request.Method.GET, token_url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    String flag = response;
+                    Log.e( flag ,"onResponse: tokens" );
+                    try {
+                        jsonObject = new JSONObject(response);
+                        Log.e(String.valueOf(jsonObject), "onResponse:");
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                JSONArray obj = null;
+                try {
+                    obj = (JSONArray) (jsonObject.get("user"));
+                    tokenarray = new String[obj.length()];
+                    for (int j = 0; j < obj.length(); j++) {
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = (JSONObject) (obj.get(j));
+                            String token = jsonObject.optString("token");
+                            tokenarray[j] = token;
+                            Log.e( tokenarray[j],"onResponse: name" );
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Random rand = new Random();
+                password_real1 = (rand.nextInt(tokenarray.length) + 0);
+                password_real=tokenarray[password_real1];
+
+            }
+
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+
+
+                return hashMap;
+
+            }
+        };
+
+
+        requestQueue.add(request);
 
 
     }
 
-    private void SigninWithPhone(PhoneAuthCredential credential){
+
+    private void SigninWithPhone(PhoneAuthCredential credential) {
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Intent intent = new Intent(otp.this, Ticket.class);
-                            intent.putExtra("Password", password);
+                            intent.putExtra("Password", password_real);
                             intent.putExtra("Username", username);
                             intent.putExtra("type", type);
                             intent.putExtra("count", name_count);
@@ -92,9 +187,9 @@ public class otp extends AppCompatActivity {
                     }
                 });
     }
-    public void generate_otp(View v)
-    {
-        final String phonenumber_real = phonenumber.getText().toString();
+
+    public void generate_otp(View v) {
+        phonenumber_real = phonenumber.getText().toString();
         Log.e(phonenumber_real, "onClick: mobile number");
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phonenumber_real,                     // Phone number to verify
@@ -108,5 +203,50 @@ public class otp extends AppCompatActivity {
         String otpnumber_real = otpnumber.getText().toString();
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationCode, otpnumber_real);
         SigninWithPhone(credential);
+        if (emailID.length() != 0 && username.length() != 0 && reference.length() != 0) {
+            request = new StringRequest(Request.Method.POST, URL_guest, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        String flag = response;
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                    hashMap.put("name", username);
+                    hashMap.put("phonenumber", phonenumber_real);
+                    hashMap.put("id", id);
+                    hashMap.put("email", emailID);  // added email
+                    hashMap.put("reference", reference);
+                    hashMap.put("token", password_real); // added refernce
+
+
+                    return hashMap;
+
+                }
+            };
+
+
+            requestQueue.add(request);
+
+        }
     }
 }
+
+
