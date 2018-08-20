@@ -50,11 +50,13 @@ public class otp extends AppCompatActivity {
     String name, emailID, reference;
     private RequestQueue requestQueue;
     private StringRequest request;
+    int password_index;
     JSONObject jsonObject;
     String phonenumber_real = "";
     String[] tokenarray;
     private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
     private static final String token_url = "https://script.google.com/macros/s/AKfycbyXttNyrNjD1emRZA8jFK8s6i_V-Fs7dlOBHjdWrixZZ54AdCfd/exec";
+    private static final String token_delete = "https://script.google.com/macros/s/AKfycbxcR6q0-HCjitqoVzrzavcbS1tLJoHbzkBc6OcpyNbO4ZWo8dGK/exec";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +143,7 @@ public class otp extends AppCompatActivity {
                 Random rand = new Random();
                 password_real1 = (rand.nextInt(tokenarray.length) + 0);
                 password_real=tokenarray[password_real1];
+                password_index = password_real1 + 1;
 
             }
 
@@ -180,6 +183,42 @@ public class otp extends AppCompatActivity {
                             intent.putExtra("type", type);
                             intent.putExtra("count", name_count);
                             startActivity(intent);
+                            request = new StringRequest(Request.Method.POST, token_delete, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+
+                                    try {
+                                        String flag = response;
+                                        Log.e(flag, "onResponse: tokens");
+
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+
+
+
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+
+                                }
+                            }) {
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
+                                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                                    hashMap.put("token_index", String.valueOf(password_index));
+
+
+                                    return hashMap;
+
+                                }
+                            };
+
+
+                            requestQueue.add(request);
                             finish();
                         } else {
                             Toast.makeText(otp.this, "Incorrect OTP", Toast.LENGTH_SHORT).show();
