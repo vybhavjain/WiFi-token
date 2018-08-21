@@ -20,6 +20,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -27,12 +31,16 @@ import java.util.Random;
 public class login extends AppCompatActivity {
     SharedPreferences sharedpreferences;
     private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
+    private static final String URL_check = "https://script.google.com/macros/s/AKfycbxvD8zvWeIB9ZnoOGvkAA0eBRksFxBJENlHJviRvyP5FxzV2fc/exec";
     private RequestQueue requestQueue;
     private StringRequest request;
     String password , type1;
     int guest;
     EditText name , phonenumber , email , reference;   // added email, refered person
     Button b;
+    int flag1 = 0;
+    JSONObject jsonArray;
+    String[] emailarray , tokenarray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +66,16 @@ public class login extends AppCompatActivity {
                 Log.e( emailID ,"onClick: email");
                 int flag = 0;
                 final String myreference = reference.getText().toString();  // added new reference
-              //  final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
+                request = new StringRequest(Request.Method.GET, URL_check , new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
-           /*     if(email.length() != 0 && name.length() != 0 && reference.length() !=0) {
-                    request = new StringRequest(Request.Method.POST, URL_guest, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-
+                        try {
+                            String flag = response;
+                            Log.e(flag, "onResponse:dailydarshan ");
                             try {
-                                String flag = response;
+                                jsonArray = new JSONObject(response);
+                                Log.e(String.valueOf(jsonArray), "onResponse:");
 
 
                             } catch (Exception e) {
@@ -74,58 +83,95 @@ public class login extends AppCompatActivity {
                             }
 
 
+                            JSONArray obj = null;
+                            try {
+                                obj = (JSONArray) (jsonArray.get("user"));
+                                emailarray = new String[obj.length()];
+                                tokenarray = new String[obj.length()];
+                                for (int j = 0; j < obj.length(); j++) {
+                                    JSONObject jsonObject = null;
+                                    try {
+                                        jsonObject = (JSONObject) (obj.get(j));
+                                        String email = jsonObject.optString("email");
+                                        String token = jsonObject.optString("token");
+                                        emailarray[j] = email;
+                                        tokenarray[j] = token;
+                                        Log.e( emailarray[j],"onResponse: name" );
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                for( int i = 0; i < emailarray.length; i++ )
+                                {
+                                    if(emailID.equals(emailarray[i]))
+                                    {
+                                        flag1 = 1;
+                                        password = tokenarray[i];
+                                        type1 = "g";
+                                        Intent intent_here = new Intent(login.this , Ticket.class);
+                                        intent_here.putExtra("Username", myname);
+                                        intent_here.putExtra("Password", password);
+                                        intent_here.putExtra("type", type1);
+                                        startActivity(intent_here);
+
+                                    }
+                                }
+
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
 
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            HashMap<String, String> hashMap = new HashMap<String, String>();
-                            hashMap.put("name", myname);
-                           // hashMap.put("phonenumber", myphone);
-                            hashMap.put("id", id);
-                            hashMap.put("email", emailID);  // added email
-                            hashMap.put("reference", myreference);  // added refernce
+                    }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        HashMap<String, String> hashMap = new HashMap<String, String>();
 
 
-                            return hashMap;
+                        return hashMap;
 
-                        }
-                    };
+                    }
+                };
 
+                requestQueue.add(request);
 
-                    requestQueue.add(request);
-
-                }
-                */
                 guest += 1;
                 editor.putString("count_var", String.valueOf(guest));
                 editor.commit();
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 String name_count = preferences.getString("count_var", "");
                 type1 = "g";
-                Random random = new Random();
+            /*    Random random = new Random();
                 password = String.valueOf(random.nextInt(100000) + 0);
-                Log.e( password,"onClick: password" );
+                Log.e( password,"onClick: password" ); */
                 Intent intent = new Intent(login.this , otp.class);
-                if(email.length() == 0||name.length() == 0 || reference.length() ==0)
+                if(email.length() == 0||name.length() == 0 || reference.length() ==0 )
                 {
                  Toast.makeText(getApplicationContext(),"Please fill all fields",Toast.LENGTH_LONG).show();
                 }
-                else
+                else if( flag1 != 1 )
                 {
-                    intent.putExtra("Password", password);
                     intent.putExtra("Username", myname);
                     intent.putExtra("type", type1);
-                    intent.putExtra("count", name_count);
                     intent.putExtra("email", emailID);
                     intent.putExtra("reference", myreference);
-                    Log.e(name_count, "onClick: count");
                     startActivity(intent);
                 }
             }

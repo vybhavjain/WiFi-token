@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private StringRequest request;
     JSONObject jsonArray;
-    int inmate , guest;
+    int inmate , guest, inmateindex;
     TextView guest12;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,32 +134,31 @@ public class MainActivity extends AppCompatActivity {
                 final String myphone = phonenumber.getText().toString();
                 int flag = 0;
                 final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
-                for( int i = 0; i < namesarray.length; i++ )
+                if( myname.length() == 0 || myphone.length() == 0 )
                 {
-                    Log.e(String.valueOf(myname.equals(namesarray[i])),"onClick: comparison" );
-                    if(namesarray[i].equals(myname))
-                    {
-                        if(phonenumberarray[i].equals(myphone))
-                        {
-                            flag = 1;
-                            type1 = "i";
-                            Random random = new Random();
-                            password = String.valueOf(random.nextInt(100000) + 0);
-                            Log.e( password,"onClick: password" );
-                            Intent intent = new Intent(MainActivity.this , Ticket.class);
-                            intent.putExtra("Password" , password);
-                            intent.putExtra("Username" , myname);
-                            intent.putExtra("type" , type1 );
-                            startActivity(intent);
+                    Toast.makeText(getApplicationContext() , "Please fill all fields" , Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    for (int i = 0; i < namesarray.length; i++) {
+                        Log.e(String.valueOf(myname.equals(namesarray[i])), "onClick: comparison");
+                        if (namesarray[i].equals(myname)) {
+                            if (phonenumberarray[i].equals(myphone)) {
+                                flag = 1;
+                                inmateindex=i+2;
+                                type1 = "i";
+                                Intent intent = new Intent(MainActivity.this, otp.class);
+                                intent.putExtra("Username", myname);
+                                intent.putExtra("type", type1);
+                                intent.putExtra("inmateindex", String.valueOf(inmateindex));
+                                startActivity(intent);
 
 
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Phone number is incorrect", Toast.LENGTH_LONG).show();
+                            }
                         }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext() , "Phone number is incorrect",Toast.LENGTH_LONG).show();
-                        }
+
                     }
-
                 }
                 if( flag != 1 )
                 {
