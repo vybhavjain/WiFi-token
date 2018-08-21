@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sharedpreferences;
     EditText name , phonenumber;
-    String[] namesarray , phonenumberarray;
+    String[] namesarray , phonenumberarray , tokenarray_inmate;
     Button b;
     String password , type1;
     private static final String URL = "https://script.googleusercontent.com/macros/echo?user_content_key=suSzdJxXBfM90snBivmZZzp7yyuJTu_Ya4qMQlPFcML-pBzHhBRDE2mBs94zfMF0YZTgAp6V9gN2KL3orU8MoFS3W9lvaBJRm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnCSxg59lhMImqfINVDyVfMjQ7I1hBwkBHvqa3IcR2vWqYG6WaOXNcFwu1QPxwNwfZ0WY2nZ7HPw5&lib=Mpmp6VZVIcgylJlJbX0MEHL866zndRzds";
@@ -76,15 +76,19 @@ public class MainActivity extends AppCompatActivity {
                         obj = (JSONArray) (jsonArray.get("user"));
                         namesarray = new String[obj.length()];
                         phonenumberarray = new String[obj.length()];
+                        tokenarray_inmate = new String[obj.length()];
                         for (int j = 0; j < obj.length(); j++) {
                             JSONObject jsonObject = null;
                             try {
                                 jsonObject = (JSONObject) (obj.get(j));
                                 String name = jsonObject.optString("name");
                                 String phonenumberget = jsonObject.optString("phone_number");
+                                String tokenget = jsonObject.optString("token_inmate");
                                 namesarray[j] = name;
                                 phonenumberarray[j] = phonenumberget;
+                                tokenarray_inmate[j] = tokenget;
                                 Log.e( namesarray[j],"onResponse: name" );
+                                Log.e(tokenarray_inmate[j], "onResponse: token" );
 
 
                             } catch (JSONException e) {
@@ -129,9 +133,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final String myname = name.getText().toString();
+                final String myname = name.getText().toString().trim();
                 Log.e( myname,"onClick: name");
-                final String myphone = phonenumber.getText().toString();
+                final String myphone = phonenumber.getText().toString().trim();
                 int flag = 0;
                 final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
                 if( myname.length() == 0 || myphone.length() == 0 )
@@ -141,16 +145,26 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     for (int i = 0; i < namesarray.length; i++) {
                         Log.e(String.valueOf(myname.equals(namesarray[i])), "onClick: comparison");
-                        if (namesarray[i].equals(myname)) {
+                        if (namesarray[i].equalsIgnoreCase(myname)) {
                             if (phonenumberarray[i].equals(myphone)) {
                                 flag = 1;
                                 inmateindex=i+2;
                                 type1 = "i";
-                                Intent intent = new Intent(MainActivity.this, otp.class);
-                                intent.putExtra("Username", myname);
-                                intent.putExtra("type", type1);
-                                intent.putExtra("inmateindex", String.valueOf(inmateindex));
-                                startActivity(intent);
+                                if( tokenarray_inmate[i].length() == 0 ) {
+                                    Intent intent = new Intent(MainActivity.this, otp.class);
+                                    intent.putExtra("Username", myname);
+                                    intent.putExtra("type", type1);
+                                    intent.putExtra("inmateindex", String.valueOf(inmateindex));
+                                    startActivity(intent);
+                                }
+                                else
+                                {
+                                    Intent intent_1 = new Intent(MainActivity.this, Ticket.class);
+                                    intent_1.putExtra("Username", myname);
+                                    intent_1.putExtra("Password",tokenarray_inmate[i]);
+                                    intent_1.putExtra("type", type1);
+                                    startActivity(intent_1);
+                                }
 
 
                             } else {
