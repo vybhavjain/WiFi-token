@@ -59,6 +59,8 @@ public class otp extends AppCompatActivity {
     private static final String URL_inmate = "https://script.google.com/macros/s/AKfycbysQjfTssbAb7rBb7nvebEos4Y0ijLSTZF3HCSY9GV7zrIAEwE/exec";
     private static final String token_url = "https://script.google.com/macros/s/AKfycbyXttNyrNjD1emRZA8jFK8s6i_V-Fs7dlOBHjdWrixZZ54AdCfd/exec";
     private static final String token_delete = "https://script.google.com/macros/s/AKfycbxcR6q0-HCjitqoVzrzavcbS1tLJoHbzkBc6OcpyNbO4ZWo8dGK/exec";
+    private static final String token_url_inmate = "https://script.google.com/macros/s/AKfycbzc2chHOPYzRtGE81CLq21pcOBdymR3F6qdXsB3Xpy5yZDQyt0/exec";
+    private static final String token_delete_inmate = "https://script.google.com/macros/s/AKfycbwRZV5eZuwfl-3C7AJl5iTjxH1NeEFwkw_LoTVxE5D4298MiI0/exec";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,31 +102,31 @@ public class otp extends AppCompatActivity {
             }
 
         };
+        if( type.equals("g")) {
+            request = new StringRequest(Request.Method.GET, token_url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
 
-        request = new StringRequest(Request.Method.GET, token_url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                try {
-                    String flag = response;
-                    Log.e( flag ,"onResponse: tokens" );
                     try {
-                        jsonObject = new JSONObject(response);
-                        Log.e(String.valueOf(jsonObject), "onResponse:");
+                        String flag = response;
+                        Log.e(flag, "onResponse: tokens");
+                        try {
+                            jsonObject = new JSONObject(response);
+                            Log.e(String.valueOf(jsonObject), "onResponse:");
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                JSONArray obj = null;
-                try {
-                    obj = (JSONArray) (jsonObject.get("user"));
+                    JSONArray obj = null;
+                    try {
+                        obj = (JSONArray) (jsonObject.get("user"));
                         tokenarray = new String[obj.length()];
                         for (int j = 0; j < obj.length(); j++) {
                             JSONObject jsonObject = null;
@@ -140,35 +142,107 @@ public class otp extends AppCompatActivity {
                             }
                         }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Random rand = new Random();
+                    password_real1 = (rand.nextInt(tokenarray.length) + 0);
+                    password_real = tokenarray[password_real1];
+                    password_index = password_real1 + 1;
+
                 }
-                Random rand = new Random();
-                password_real1 = (rand.nextInt(tokenarray.length) + 0);
-                password_real=tokenarray[password_real1];
-                password_index = password_real1 + 1;
-
-            }
 
 
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> hashMap = new HashMap<String, String>();
-
-
-                return hashMap;
-
-            }
-        };
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String, String> hashMap = new HashMap<String, String>();
 
 
-        requestQueue.add(request);
+                    return hashMap;
+
+                }
+            };
+
+
+            requestQueue.add(request);
+        }
+        else if( type.equals("i")) {
+            request = new StringRequest(Request.Method.GET, token_url_inmate, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    try {
+                        String flag = response;
+                        Log.e(flag, "onResponse: tokens");
+                        try {
+                            jsonObject = new JSONObject(response);
+                            Log.e(String.valueOf(jsonObject), "onResponse:");
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    JSONArray obj = null;
+                    try {
+                        obj = (JSONArray) (jsonObject.get("user"));
+                        tokenarray = new String[obj.length()];
+                        for (int j = 0; j < obj.length(); j++) {
+                            JSONObject jsonObject = null;
+                            try {
+                                jsonObject = (JSONObject) (obj.get(j));
+                                String token = jsonObject.optString("token");
+                                tokenarray[j] = token;
+                                Log.e(tokenarray[j], "onResponse: name");
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Random rand = new Random();
+                    password_real1 = (rand.nextInt(tokenarray.length) + 0);
+                    password_real = tokenarray[password_real1];
+                    password_index = password_real1 + 1;
+
+                }
+
+
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String, String> hashMap = new HashMap<String, String>();
+
+
+                    return hashMap;
+
+                }
+            };
+
+
+            requestQueue.add(request);
+
+        }
 
 
     }
@@ -185,42 +259,79 @@ public class otp extends AppCompatActivity {
                             intent.putExtra("Username", username);
                             intent.putExtra("type", type);
                             startActivity(intent);
-                            request = new StringRequest(Request.Method.POST, token_delete, new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
+                            if( type.equals("g")) {
+                                request = new StringRequest(Request.Method.POST, token_delete, new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
 
-                                    try {
-                                        String flag = response;
-                                        Log.e(flag, "onResponse: tokens");
+                                        try {
+                                            String flag = response;
+                                            Log.e(flag, "onResponse: tokens");
 
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
 
 
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+
+                                    }
+                                }) {
+                                    @Override
+                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                        HashMap<String, String> hashMap = new HashMap<String, String>();
+                                        hashMap.put("token_index", String.valueOf(password_index));
 
 
-                            }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
+                                        return hashMap;
 
-                                }
-                            }) {
-                                @Override
-                                protected Map<String, String> getParams() throws AuthFailureError {
-                                    HashMap<String, String> hashMap = new HashMap<String, String>();
-                                    hashMap.put("token_index", String.valueOf(password_index));
+                                    }
+                                };
 
 
-                                    return hashMap;
+                                requestQueue.add(request);
+                            }
+                            else if( type.equals("i"))
+                            {
+                                request = new StringRequest(Request.Method.POST, token_delete_inmate, new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
 
-                                }
-                            };
+                                        try {
+                                            String flag = response;
+                                            Log.e(flag, "onResponse: tokens");
 
 
-                            requestQueue.add(request);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+
+                                    }
+                                }) {
+                                    @Override
+                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                        HashMap<String, String> hashMap = new HashMap<String, String>();
+                                        hashMap.put("token_index", String.valueOf(password_index));
+
+
+                                        return hashMap;
+
+                                    }
+                                };
+
+
+                                requestQueue.add(request);
+                            }
                             finish();
                         } else {
                             Toast.makeText(otp.this, "Incorrect OTP", Toast.LENGTH_SHORT).show();
