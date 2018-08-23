@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +59,7 @@ public class otp extends AppCompatActivity {
     String[] tokenarray;
     String inmateindex;
     int checker=0;
+    String formattedDate;
     private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
     private static final String URL_inmate = "https://script.google.com/macros/s/AKfycbysQjfTssbAb7rBb7nvebEos4Y0ijLSTZF3HCSY9GV7zrIAEwE/exec";
     private static final String token_url = "https://script.google.com/macros/s/AKfycbyXttNyrNjD1emRZA8jFK8s6i_V-Fs7dlOBHjdWrixZZ54AdCfd/exec";
@@ -83,6 +85,10 @@ public class otp extends AppCompatActivity {
         Log.e(reference, "onCreate: reference" );
         emailID = getIntent().getStringExtra("email");
         requestQueue = Volley.newRequestQueue(this);
+
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        formattedDate = df.format(c);
 
 
         auth = FirebaseAuth.getInstance();
@@ -131,29 +137,37 @@ public class otp extends AppCompatActivity {
                     try {
                         obj = (JSONArray) (jsonObject.get("user"));
                         tokenarray = new String[obj.length()];
-                        for (int j = 0; j < obj.length(); j++) {
-                            JSONObject jsonObject = null;
-                            try {
-                                jsonObject = (JSONObject) (obj.get(j));
-                                String token = jsonObject.optString("token");
-                                tokenarray[j] = token;
-                                Log.e(tokenarray[j], "onResponse: name");
+                        if (tokenarray.length < 3) {
+                            Toast.makeText(otp.this, "Please contact help desk for token .", Toast.LENGTH_LONG).show();
+                        }
+                            else {
+                            Log.e(String.valueOf(tokenarray.length), "onResponse: lollllllllllll ");
+                            for (int j = 0; j < obj.length(); j++) {
+                                JSONObject jsonObject = null;
+                                try {
+                                    jsonObject = (JSONObject) (obj.get(j));
+                                    String token = jsonObject.optString("token");
+                                    tokenarray[j] = token;
+                                    Log.e(tokenarray[j], "onResponse: name");
 
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                    Random rand = new Random();
-                    password_real1 = (rand.nextInt(tokenarray.length) + 0);
-                    password_real = tokenarray[password_real1];
-                    password_index = password_real1 + 1;
 
-                }
+                          catch(JSONException e){
+                            e.printStackTrace();
+                        }
+                        Random rand = new Random();
+                        password_real1 = (rand.nextInt(tokenarray.length) + 0);
+                        password_real = tokenarray[password_real1];
+                        password_index = password_real1 + 1;
+                    }
+
+
 
 
             }, new Response.ErrorListener() {
@@ -174,6 +188,7 @@ public class otp extends AppCompatActivity {
 
 
             requestQueue.add(request);
+
         }
         else if( type.equals("i")) {
             request = new StringRequest(Request.Method.GET, token_url_inmate, new Response.Listener<String>() {
@@ -201,17 +216,22 @@ public class otp extends AppCompatActivity {
                     try {
                         obj = (JSONArray) (jsonObject.get("user"));
                         tokenarray = new String[obj.length()];
-                        for (int j = 0; j < obj.length(); j++) {
-                            JSONObject jsonObject = null;
-                            try {
-                                jsonObject = (JSONObject) (obj.get(j));
-                                String token = jsonObject.optString("token");
-                                tokenarray[j] = token;
-                                Log.e(tokenarray[j], "onResponse: name");
+                        if (tokenarray.length < 2) {
+                            Toast.makeText(otp.this, "Please contact help desk for token .", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            for (int j = 0; j < obj.length(); j++) {
+                                JSONObject jsonObject = null;
+                                try {
+                                    jsonObject = (JSONObject) (obj.get(j));
+                                    String token = jsonObject.optString("token");
+                                    tokenarray[j] = token;
+                                    Log.e(tokenarray[j], "onResponse: name");
 
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
 
@@ -295,7 +315,7 @@ public class otp extends AppCompatActivity {
                                             hashMap.put("email", emailID);  // added email
                                             hashMap.put("reference", reference);
                                             hashMap.put("token", password_real); // added refernce
-
+                                            hashMap.put("date", formattedDate);
 
                                             return hashMap;
 
@@ -340,7 +360,7 @@ public class otp extends AppCompatActivity {
                                             HashMap<String, String> hashMap = new HashMap<String, String>();
                                             hashMap.put("index", inmateindex); // val in database
                                             hashMap.put("token",password_real); // added refernce
-
+                                            hashMap.put("date", formattedDate);
 
                                             return hashMap;
 

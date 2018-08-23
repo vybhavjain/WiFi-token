@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         namesarray = new String[obj.length()];
                         phonenumberarray = new String[obj.length()];
                         tokenarray_inmate = new String[obj.length()];
+
                         for (int j = 0; j < obj.length(); j++) {
                             JSONObject jsonObject = null;
                             try {

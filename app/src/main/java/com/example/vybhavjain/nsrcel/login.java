@@ -70,7 +70,6 @@ public class login extends AppCompatActivity {
 
                         try {
                             String flag = response;
-                            Log.e(flag, "onResponse:dailydarshan ");
                             try {
                                 jsonArray = new JSONObject(response);
                                 Log.e(String.valueOf(jsonArray), "onResponse:");
