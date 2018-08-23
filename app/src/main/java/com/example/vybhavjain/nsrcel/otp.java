@@ -216,9 +216,8 @@ public class otp extends AppCompatActivity {
                     try {
                         obj = (JSONArray) (jsonObject.get("user"));
                         tokenarray = new String[obj.length()];
-                        if (tokenarray.length < 2) {
+                        if (tokenarray.length < 2)
                             Toast.makeText(otp.this, "Please contact help desk for token .", Toast.LENGTH_LONG).show();
-                        }
                         else {
                             for (int j = 0; j < obj.length(); j++) {
                                 JSONObject jsonObject = null;
