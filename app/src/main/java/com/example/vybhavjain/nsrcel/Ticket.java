@@ -23,6 +23,7 @@ import android.widget.TextView;
          uname = (TextView) findViewById(R.id.username);
          upassword = (TextView) findViewById(R.id.password);
          //   countdown = (TextView) findViewById(R.id.countdown);
+         //   countdown = (TextView) findViewById(R.id.countdown);
          uname.setText("Username: " + username);
          upassword.setText("Password: " + password);
 
