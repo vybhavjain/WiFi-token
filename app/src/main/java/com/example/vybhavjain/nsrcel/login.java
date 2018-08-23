@@ -47,7 +47,6 @@ public class login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         name = (EditText) findViewById(R.id.myname);
-        //phonenumber = (EditText) findViewById(R.id.myphone);
         email = (EditText) findViewById(R.id.email);  // edit text needed
         reference = (EditText) findViewById(R.id.reference); //  edit text needed
         b = (Button) findViewById(R.id.submit);
@@ -61,7 +60,6 @@ public class login extends AppCompatActivity {
             public void onClick(View view) {
                 final String myname = name.getText().toString();
                 Log.e( myname,"onClick: name");
-                //final String myphone = phonenumber.getText().toString();
                 final String emailID = email.getText().toString();
                 Log.e( emailID ,"onClick: email");
                 int flag = 0;
@@ -158,9 +156,6 @@ public class login extends AppCompatActivity {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 String name_count = preferences.getString("count_var", "");
                 type1 = "g";
-            /*    Random random = new Random();
-                password = String.valueOf(random.nextInt(100000) + 0);
-                Log.e( password,"onClick: password" ); */
                 Intent intent = new Intent(login.this , otp.class);
                 if(email.length() == 0||name.length() == 0 || reference.length() ==0 )
                 {

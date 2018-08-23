@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         phonenumber = (EditText) findViewById(R.id.myphone);
         b = (Button) findViewById(R.id.submit);
         guest12 = (TextView) findViewById(R.id.guest);
-      //  sharedpreferences = getSharedPreferences("Count", Context.MODE_PRIVATE);
 
 
         request = new StringRequest(Request.Method.GET, URL , new Response.Listener<String>() {
@@ -167,17 +166,15 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
 
-                            } else {
+                            } else
                                 Toast.makeText(getApplicationContext(), "Phone number is incorrect", Toast.LENGTH_LONG).show();
-                            }
                         }
 
                     }
                 }
                 if( flag != 1 )
-                {
-                    Toast.makeText(getApplicationContext() ,"User not registered" , Toast.LENGTH_LONG).show();
-                }
+                    Toast.makeText(getApplicationContext() ,"User not registered, please contact the administration." , Toast.LENGTH_LONG).show();
+
 
 
             }
@@ -192,61 +189,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-/*    public void callapi()
-    {
-        request = new StringRequest(Request.Method.GET, URL , new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                try {
-                    String flag = response;
-                    Log.e(flag, "onResponse:dailydarshan ");
-                    try {
-                        jsonArray = new JSONArray(response);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    namesarray = new String[jsonArray.length()];
-                    phonenumberarray = new String[jsonArray.length()];
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject obj = null;
-                        try {
-                            obj = (JSONObject) (jsonArray.get(i));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        String name = obj.optString("name");
-                        String phonenumberget = obj.optString("phonenumber");
-                        namesarray[i] = name;
-                        phonenumberarray[i] = phonenumberget;
-                    }
-
-
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> hashMap = new HashMap<String, String>();
-
-
-                return hashMap;
-
-            }
-        };
-
-        requestQueue.add(request);
-    } */
 }

@@ -1,6 +1,7 @@
 package com.example.vybhavjain.nsrcel;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -53,8 +54,10 @@ public class otp extends AppCompatActivity {
     int password_index;
     JSONObject jsonObject;
     String phonenumber_real = "";
+    int count=0;
     String[] tokenarray;
     String inmateindex;
+    int checker=0;
     private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
     private static final String URL_inmate = "https://script.google.com/macros/s/AKfycbysQjfTssbAb7rBb7nvebEos4Y0ijLSTZF3HCSY9GV7zrIAEwE/exec";
     private static final String token_url = "https://script.google.com/macros/s/AKfycbyXttNyrNjD1emRZA8jFK8s6i_V-Fs7dlOBHjdWrixZZ54AdCfd/exec";
@@ -91,7 +94,7 @@ public class otp extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
-                Toast.makeText(otp.this, "verification failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(otp.this, "verification failed, please add +91 or a valid number", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -259,6 +262,96 @@ public class otp extends AppCompatActivity {
                             intent.putExtra("Username", username);
                             intent.putExtra("type", type);
                             startActivity(intent);
+                            if(type.equals("g")) {
+                                if (emailID.length() != 0 && username.length() != 0 && reference.length() != 0) {
+                                    request = new StringRequest(Request.Method.POST, URL_guest, new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+
+                                            try {
+                                                String flag = response;
+
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+                                        }
+
+
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+
+                                        }
+                                    }) {
+                                        @Override
+                                        protected Map<String, String> getParams() throws AuthFailureError {
+                                            HashMap<String, String> hashMap = new HashMap<String, String>();
+                                            hashMap.put("name", username);
+                                            hashMap.put("phonenumber", phonenumber_real);
+                                            hashMap.put("id", id);
+                                            hashMap.put("email", emailID);  // added email
+                                            hashMap.put("reference", reference);
+                                            hashMap.put("token", password_real); // added refernce
+
+
+                                            return hashMap;
+
+                                        }
+                                    };
+
+
+                                    requestQueue.add(request);
+
+                                }
+                            }
+                            else if (type.equals("i"))
+                            {
+                                Log.e(type, "verify_otp:hi " );
+                                Log.e(password_real, "verify_otp: password real");
+                                Log.e(inmateindex, "verify_otp: inmate index ");
+                                if (username.length() != 0) {
+                                    request = new StringRequest(Request.Method.POST, URL_inmate, new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+
+                                            try {
+                                                String flag = response;
+
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+                                        }
+
+
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+
+                                        }
+                                    }) {
+                                        @Override
+                                        protected Map<String, String> getParams() throws AuthFailureError {
+                                            HashMap<String, String> hashMap = new HashMap<String, String>();
+                                            hashMap.put("index", inmateindex); // val in database
+                                            hashMap.put("token",password_real); // added refernce
+
+
+                                            return hashMap;
+
+                                        }
+                                    };
+
+
+                                    requestQueue.add(request);
+
+                                }
+                            }
                             if( type.equals("g")) {
                                 request = new StringRequest(Request.Method.POST, token_delete, new Response.Listener<String>() {
                                     @Override
@@ -334,117 +427,48 @@ public class otp extends AppCompatActivity {
                             }
                             finish();
                         } else {
-                            Toast.makeText(otp.this, "Incorrect OTP", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+
+                            count++;
+                            if(count<2)
+                             Toast.makeText(otp.this, "Incorrect OTP", Toast.LENGTH_SHORT).show();
+                            else if(count<3)
+                                Toast.makeText(otp.this, "Incorrect OTP,After the next Incorrect OTP, you will be taken to the guest login page", Toast.LENGTH_LONG).show();
+                            else
+                                System.exit(0);
+                            }
+
+                            }
+
                 });
     }
 
     public void generate_otp(View v) {
         phonenumber_real = phonenumber.getText().toString();
-        Log.e(phonenumber_real, "onClick: mobile number");
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phonenumber_real,                     // Phone number to verify
-                60,                           // Timeout duration
-                TimeUnit.SECONDS,                // Unit of timeout
-                otp.this,        // Activity (for callback binding)
-                mCallback);                      // OnVerificationStateChangedCallbacks
+        if (phonenumber_real.length() == 0) {
+            Toast.makeText(getApplicationContext(), "Please fill Phone number first", Toast.LENGTH_SHORT).show();
+            Log.e(phonenumber_real, "onClick: mobile number");
+        } else {
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                    phonenumber_real,                     // Phone number to verify
+                    60,                           // Timeout duration
+                    TimeUnit.SECONDS,                // Unit of timeout
+                    otp.this,        // Activity (for callback binding)
+                    mCallback);                      // OnVerificationStateChangedCallbacks
+        }
     }
 
     public void verify_otp(View v) {
-        String otpnumber_real = otpnumber.getText().toString();
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationCode, otpnumber_real);
-        SigninWithPhone(credential);
-        if(type.equals("g")) {
-            if (emailID.length() != 0 && username.length() != 0 && reference.length() != 0) {
-                request = new StringRequest(Request.Method.POST, URL_guest, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        try {
-                            String flag = response;
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-
-
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        HashMap<String, String> hashMap = new HashMap<String, String>();
-                        hashMap.put("name", username);
-                        hashMap.put("phonenumber", phonenumber_real);
-                        hashMap.put("id", id);
-                        hashMap.put("email", emailID);  // added email
-                        hashMap.put("reference", reference);
-                        hashMap.put("token", password_real); // added refernce
-
-
-                        return hashMap;
-
-                    }
-                };
-
-
-                requestQueue.add(request);
-
-            }
-        }
-        else if (type.equals("i"))
+        phonenumber_real = phonenumber.getText().toString();
+        if( phonenumber_real.length() == 0 )
         {
-            Log.e(type, "verify_otp:hi " );
-            Log.e(password_real, "verify_otp: password real");
-            Log.e(inmateindex, "verify_otp: inmate index ");
-            if (username.length() != 0) {
-                request = new StringRequest(Request.Method.POST, URL_inmate, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        try {
-                            String flag = response;
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-
-
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        HashMap<String, String> hashMap = new HashMap<String, String>();
-                        hashMap.put("index", inmateindex); // val in database
-                        hashMap.put("token",password_real); // added refernce
-
-
-                        return hashMap;
-
-                    }
-                };
-
-
-                requestQueue.add(request);
-
-            }
+            Toast.makeText(getApplicationContext(),"Please fill Phone number first",Toast.LENGTH_SHORT).show();
         }
+        else {
+            String otpnumber_real = otpnumber.getText().toString();
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationCode, otpnumber_real);
+            SigninWithPhone(credential);
+        }
+
     }
 }
 
