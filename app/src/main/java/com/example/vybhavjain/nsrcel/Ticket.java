@@ -9,24 +9,25 @@ import android.widget.TextView;
 
  public class Ticket extends AppCompatActivity {
 
-    TextView uname, upassword , countdown;
-    CountDownTimer countDownTimer;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.ticketpage);
-        String username = getIntent().getStringExtra("Username");
-        String password = getIntent().getStringExtra("Password");
-        String type_user = getIntent().getStringExtra("type");
-        Log.e(type_user, "onCreate: user_type");
-        uname = (TextView) findViewById(R.id.username);
-        upassword = (TextView) findViewById(R.id.password);
-        countdown = (TextView) findViewById(R.id.countdown);
-        uname.setText("Username: " + username);
-        upassword.setText("Password: " + password);
+     TextView uname, upassword, countdown;
+     CountDownTimer countDownTimer;
+
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.ticketpage);
+         String username = getIntent().getStringExtra("Username");
+         String password = getIntent().getStringExtra("Password");
+         String type_user = getIntent().getStringExtra("type");
+         Log.e(type_user, "onCreate: user_type");
+         uname = (TextView) findViewById(R.id.username);
+         upassword = (TextView) findViewById(R.id.password);
+         //   countdown = (TextView) findViewById(R.id.countdown);
+         uname.setText("Username: " + username);
+         upassword.setText("Password: " + password);
 
 
-        if (type_user.equals("i")) {
+    /*    if (type_user.equals("i")) {
             if (countDownTimer != null) {
                 countDownTimer.cancel();
             }
@@ -82,7 +83,9 @@ import android.widget.TextView;
                 countDownTimer.start();
             }
         }
-    }
+        */
+     }
+ }
 
 
 
