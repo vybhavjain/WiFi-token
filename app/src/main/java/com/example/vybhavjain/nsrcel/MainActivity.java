@@ -134,50 +134,47 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 final String myname = name.getText().toString().trim();
-                Log.e( myname,"onClick: name");
+                Log.e(myname, "onClick: name");
                 final String myphone = phonenumber.getText().toString().trim();
                 int flag = 0;
                 final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
-                if( myname.length() == 0 || myphone.length() == 0 )
-                {
-                    Toast.makeText(getApplicationContext() , "Please fill all fields" , Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if (myname.length() == 0 || myphone.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+                } else {
                     for (int i = 0; i < namesarray.length; i++) {
                         Log.e(String.valueOf(myname.equals(namesarray[i])), "onClick: comparison");
                         if (namesarray[i].equalsIgnoreCase(myname)) {
                             if (phonenumberarray[i].equals(myphone)) {
                                 flag = 1;
-                                inmateindex=i+2;
+                                inmateindex = i + 2;
                                 type1 = "i";
-                                if( tokenarray_inmate[i].length() == 0 ) {
+                                if (tokenarray_inmate[i].length() == 0) {
                                     Intent intent = new Intent(MainActivity.this, otp.class);
                                     intent.putExtra("Username", myname);
                                     intent.putExtra("type", type1);
                                     intent.putExtra("inmateindex", String.valueOf(inmateindex));
                                     startActivity(intent);
-                                }
-                                else
-                                {
+                                } else {
                                     Intent intent_1 = new Intent(MainActivity.this, Ticket.class);
                                     intent_1.putExtra("Username", myname);
-                                    intent_1.putExtra("Password",tokenarray_inmate[i]);
+                                    intent_1.putExtra("Password", tokenarray_inmate[i]);
                                     intent_1.putExtra("type", type1);
                                     startActivity(intent_1);
                                 }
 
 
-                            } else
+                            } else {
                                 Toast.makeText(getApplicationContext(), "Phone number is incorrect", Toast.LENGTH_LONG).show();
+                            }
+
+
                         }
-
                     }
+                    if (flag != 1)
+                        Toast.makeText(getApplicationContext(), "User not registered, please contact the administration.", Toast.LENGTH_LONG).show();
+
+
                 }
-                if( flag != 1 )
-                    Toast.makeText(getApplicationContext() ,"User not registered, please contact the administration." , Toast.LENGTH_LONG).show();
-
-
-
             }
         });
 

@@ -216,7 +216,7 @@ public class otp extends AppCompatActivity {
                     try {
                         obj = (JSONArray) (jsonObject.get("user"));
                         tokenarray = new String[obj.length()];
-                        if (tokenarray.length < 2)
+                        if (tokenarray.length < 4)
                             Toast.makeText(otp.this, "Please contact help desk for token .", Toast.LENGTH_LONG).show();
                         else {
                             for (int j = 0; j < obj.length(); j++) {
@@ -371,7 +371,7 @@ public class otp extends AppCompatActivity {
 
                                 }
                             }
-                            if( type.equals("g")) {
+                            if( type.equals("g") && tokenarray.length >= 3) {
                                 request = new StringRequest(Request.Method.POST, token_delete, new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
@@ -407,7 +407,7 @@ public class otp extends AppCompatActivity {
 
                                 requestQueue.add(request);
                             }
-                            else if( type.equals("i"))
+                            else if( type.equals("i") && tokenarray.length >= 4)
                             {
                                 request = new StringRequest(Request.Method.POST, token_delete_inmate, new Response.Listener<String>() {
                                     @Override
