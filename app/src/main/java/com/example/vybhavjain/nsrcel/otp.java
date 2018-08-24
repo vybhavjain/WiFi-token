@@ -44,6 +44,7 @@ public class otp extends AppCompatActivity {
     Button generate_otp;
     Button verify_otp;
     String inmate_phone;
+    String Username_real1;
     String password, username, type, name_count , password_real;
     int password_real1;
     FirebaseAuth auth;
@@ -57,13 +58,13 @@ public class otp extends AppCompatActivity {
     JSONObject jsonObject;
     String phonenumber_real = "";
     int count=0;
-    String[] tokenarray;
+    String[] tokenarray , userName;
     String inmateindex;
     int checker=0;
     String formattedDate;
     private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
     private static final String URL_inmate = "https://script.google.com/macros/s/AKfycbysQjfTssbAb7rBb7nvebEos4Y0ijLSTZF3HCSY9GV7zrIAEwE/exec";
-    private static final String token_url = "https://script.google.com/macros/s/AKfycbyXttNyrNjD1emRZA8jFK8s6i_V-Fs7dlOBHjdWrixZZ54AdCfd/exec";
+    private static final String token_url = "https://script.google.com/macros/s/AKfycbzvyt2QaXejNTRsVggbcZ7CI5m_Tj0hL2Q6KwQBHw3JXgdNtHw/exec";
     private static final String token_delete = "https://script.google.com/macros/s/AKfycbxcR6q0-HCjitqoVzrzavcbS1tLJoHbzkBc6OcpyNbO4ZWo8dGK/exec";
     private static final String token_url_inmate = "https://script.google.com/macros/s/AKfycbzc2chHOPYzRtGE81CLq21pcOBdymR3F6qdXsB3Xpy5yZDQyt0/exec";
     private static final String token_delete_inmate = "https://script.google.com/macros/s/AKfycbwRZV5eZuwfl-3C7AJl5iTjxH1NeEFwkw_LoTVxE5D4298MiI0/exec";
@@ -138,6 +139,7 @@ public class otp extends AppCompatActivity {
                     try {
                         obj = (JSONArray) (jsonObject.get("user"));
                         tokenarray = new String[obj.length()];
+                        userName = new String[obj.length()];
                         if (tokenarray.length < 3) {
                             Toast.makeText(otp.this, "Please contact help desk for token .", Toast.LENGTH_LONG).show();
                         }
@@ -148,6 +150,8 @@ public class otp extends AppCompatActivity {
                                 try {
                                     jsonObject = (JSONObject) (obj.get(j));
                                     String token = jsonObject.optString("token");
+                                    String userName_real = jsonObject.optString("username");
+                                    userName[j] = userName_real;
                                     tokenarray[j] = token;
                                     Log.e(tokenarray[j], "onResponse: name");
 
@@ -166,6 +170,7 @@ public class otp extends AppCompatActivity {
                         password_real1 = (rand.nextInt(tokenarray.length) + 0);
                         password_real = tokenarray[password_real1];
                         password_index = password_real1 + 1;
+                        Username_real1 = userName[password_index-1];
                     }
 
 
@@ -217,6 +222,7 @@ public class otp extends AppCompatActivity {
                     try {
                         obj = (JSONArray) (jsonObject.get("user"));
                         tokenarray = new String[obj.length()];
+                        userName = new String[obj.length()];
                         if (tokenarray.length < 4)
                             Toast.makeText(otp.this, "Please contact help desk for token .", Toast.LENGTH_LONG).show();
                         else {
@@ -225,7 +231,9 @@ public class otp extends AppCompatActivity {
                                 try {
                                     jsonObject = (JSONObject) (obj.get(j));
                                     String token = jsonObject.optString("token");
+                                    String userName_real = jsonObject.optString("username");
                                     tokenarray[j] = token;
+                                    userName[j] = userName_real;
                                     Log.e(tokenarray[j], "onResponse: name");
 
 
@@ -242,6 +250,7 @@ public class otp extends AppCompatActivity {
                     password_real1 = (rand.nextInt(tokenarray.length) + 0);
                     password_real = tokenarray[password_real1];
                     password_index = password_real1 + 1;
+                    Username_real1 = userName[password_index-1];
 
                 }
 
@@ -279,7 +288,7 @@ public class otp extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Intent intent = new Intent(otp.this, Ticket.class);
                             intent.putExtra("Password", password_real);
-                            intent.putExtra("Username", username);
+                            intent.putExtra("Username", Username_real1);
                             intent.putExtra("type", type);
                             startActivity(intent);
                             if(type.equals("g")) {
@@ -316,6 +325,7 @@ public class otp extends AppCompatActivity {
                                             hashMap.put("reference", reference);
                                             hashMap.put("token", password_real); // added refernce
                                             hashMap.put("date", formattedDate);
+                                            hashMap.put("username", Username_real1);
 
                                             return hashMap;
 
@@ -361,6 +371,7 @@ public class otp extends AppCompatActivity {
                                             hashMap.put("index", inmateindex); // val in database
                                             hashMap.put("token",password_real); // added refernce
                                             hashMap.put("date", formattedDate);
+                                            hashMap.put("UserName", Username_real1);
 
                                             return hashMap;
 
