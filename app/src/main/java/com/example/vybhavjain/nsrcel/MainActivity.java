@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
                 final String myname = name.getText().toString().trim();
                 Log.e(myname, "onClick: name");
-                final String myphone = phonenumber.getText().toString().trim();
+                String myphone = phonenumber.getText().toString().trim();
                 int flag = 0;
                 final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
                 if (myname.length() == 0 || myphone.length() == 0) {
@@ -146,12 +146,14 @@ public class MainActivity extends AppCompatActivity {
                         if (namesarray[i].equalsIgnoreCase(myname)) {
                             if (phonenumberarray[i].equals(myphone)) {
                                 flag = 1;
+                                myphone = "+91" + myphone;
                                 inmateindex = i + 2;
                                 type1 = "i";
                                 if (tokenarray_inmate[i].length() == 0) {
                                     Intent intent = new Intent(MainActivity.this, otp.class);
                                     intent.putExtra("Username", myname);
                                     intent.putExtra("type", type1);
+                                    intent.putExtra("number", myphone);
                                     intent.putExtra("inmateindex", String.valueOf(inmateindex));
                                     startActivity(intent);
                                 } else {

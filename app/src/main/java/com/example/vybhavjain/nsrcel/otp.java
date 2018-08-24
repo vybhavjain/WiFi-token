@@ -43,6 +43,7 @@ public class otp extends AppCompatActivity {
     EditText phonenumber;
     Button generate_otp;
     Button verify_otp;
+    String inmate_phone;
     String password, username, type, name_count , password_real;
     int password_real1;
     FirebaseAuth auth;
@@ -100,7 +101,7 @@ public class otp extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
-                Toast.makeText(otp.this, "verification failed, please add +91 or a valid number", Toast.LENGTH_LONG).show();
+                Toast.makeText(otp.this, "verification failed, please enter a valid number", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -463,16 +464,38 @@ public class otp extends AppCompatActivity {
 
     public void generate_otp(View v) {
         phonenumber_real = phonenumber.getText().toString();
-        if (phonenumber_real.length() == 0) {
-            Toast.makeText(getApplicationContext(), "Please fill Phone number first", Toast.LENGTH_SHORT).show();
-            Log.e(phonenumber_real, "onClick: mobile number");
-        } else {
-            PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                    phonenumber_real,                     // Phone number to verify
-                    60,                           // Timeout duration
-                    TimeUnit.SECONDS,                // Unit of timeout
-                    otp.this,        // Activity (for callback binding)
-                    mCallback);                      // OnVerificationStateChangedCallbacks
+        phonenumber_real = "+91" + phonenumber_real;
+        if(type.equals("i")) {
+            inmate_phone = getIntent().getStringExtra("number");
+            if (phonenumber_real.length() == 0) {
+                Toast.makeText(getApplicationContext(), "Please fill Phone number first", Toast.LENGTH_SHORT).show();
+                Log.e(phonenumber_real, "onClick: mobile number");
+            } else if (inmate_phone.equals(phonenumber_real)) {
+                PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                        phonenumber_real,                     // Phone number to verify
+                        60,                           // Timeout duration
+                        TimeUnit.SECONDS,                // Unit of timeout
+                        otp.this,        // Activity (for callback binding)
+                        mCallback);                      // OnVerificationStateChangedCallbacks
+            } else {
+                Toast.makeText(getApplicationContext(), "Please enter the registered number.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(type.equals("g"))
+        {
+            if (phonenumber_real.length() == 0) {
+                Toast.makeText(getApplicationContext(), "Please fill Phone number first", Toast.LENGTH_SHORT).show();
+                Log.e(phonenumber_real, "onClick: mobile number");
+                }
+            else {
+                PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                        phonenumber_real,                     // Phone number to verify
+                        60,                           // Timeout duration
+                        TimeUnit.SECONDS,                // Unit of timeout
+                        otp.this,        // Activity (for callback binding)
+                        mCallback);                      // OnVerificationStateChangedCallbacks
+
+            }
         }
     }
 
