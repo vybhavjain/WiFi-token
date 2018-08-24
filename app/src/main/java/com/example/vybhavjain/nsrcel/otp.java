@@ -169,8 +169,8 @@ public class otp extends AppCompatActivity {
                         Random rand = new Random();
                         password_real1 = (rand.nextInt(tokenarray.length) + 0);
                         password_real = tokenarray[password_real1];
-                        password_index = password_real1 + 1;
-                        Username_real1 = userName[password_index-1];
+                        password_index = password_real1+2;
+                        Username_real1 = userName[password_index-2];
                     }
 
 
@@ -249,8 +249,8 @@ public class otp extends AppCompatActivity {
                     Random rand = new Random();
                     password_real1 = (rand.nextInt(tokenarray.length) + 0);
                     password_real = tokenarray[password_real1];
-                    password_index = password_real1 + 1;
-                    Username_real1 = userName[password_index-1];
+                    password_index = password_real1+2;
+                    Username_real1 = userName[password_index-2];
 
                 }
 
