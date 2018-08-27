@@ -24,6 +24,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -32,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sharedpreferences;
     EditText name , phonenumber;
-    String[] namesarray , phonenumberarray , tokenarray_inmate , user_namearray;
+    String[] namesarray , phonenumberarray , tokenarray_inmate , user_namearray , validity, date_inmate;
     Button b;
-    String password , type1;
+    String password , type1, formattedDate , remaining_days;
     private static final String URL = "https://script.googleusercontent.com/macros/echo?user_content_key=suSzdJxXBfM90snBivmZZzp7yyuJTu_Ya4qMQlPFcML-pBzHhBRDE2mBs94zfMF0YZTgAp6V9gN2KL3orU8MoFS3W9lvaBJRm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnCSxg59lhMImqfINVDyVfMjQ7I1hBwkBHvqa3IcR2vWqYG6WaOXNcFwu1QPxwNwfZ0WY2nZ7HPw5&lib=Mpmp6VZVIcgylJlJbX0MEHL866zndRzds";
     private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
     private RequestQueue requestQueue;
@@ -77,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
                         phonenumberarray = new String[obj.length()];
                         tokenarray_inmate = new String[obj.length()];
                         user_namearray = new String[obj.length()];
+                        validity = new String[obj.length()];
+                        date_inmate = new String[obj.length()];
                         for (int j = 0; j < obj.length(); j++) {
                             JSONObject jsonObject = null;
                             try {
@@ -85,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
                                 String phonenumberget = jsonObject.optString("phone_number");
                                 String tokenget = jsonObject.optString("token_inmate");
                                 String user_name = jsonObject.optString("username");
+                                String validity_token = jsonObject.optString("validity");
+                                String date = jsonObject.optString("date");
+                                date_inmate[j]= date;
+                                validity[j] = validity_token;
                                 user_namearray[j] = user_name;
                                 namesarray[j] = name;
                                 phonenumberarray[j] = phonenumberget;
@@ -151,6 +161,27 @@ public class MainActivity extends AppCompatActivity {
                                 myphone = "+91" + myphone;
                                 inmateindex = i + 2;
                                 type1 = "i";
+                                String login_date = date_inmate[i].substring(0,10);
+                                String validity_of_token = validity[i];
+                                Log.e( validity_of_token,"onClick: validity" );
+                                Date c = Calendar.getInstance().getTime();
+                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                                formattedDate = df.format(c);
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+
+                                try {
+                                    Date date1 = simpleDateFormat.parse(login_date);
+                                    Date date2 = simpleDateFormat.parse(formattedDate);
+
+                                   long days= printDifference(date1, date2);
+                                   remaining_days=String.valueOf(days);
+
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
                                 if (tokenarray_inmate[i].length() == 0) {
                                     Intent intent = new Intent(MainActivity.this, otp.class);
                                     intent.putExtra("Username", myname);
@@ -158,13 +189,23 @@ public class MainActivity extends AppCompatActivity {
                                     intent.putExtra("number", myphone);
                                     intent.putExtra("inmateindex", String.valueOf(inmateindex));
                                     startActivity(intent);
-                                } else {
+                                } else if(Integer.parseInt(remaining_days) <= 2) {
                                     Intent intent_1 = new Intent(MainActivity.this, Ticket.class);
                                     intent_1.putExtra("Username",user_namearray[i]);
                                     intent_1.putExtra("Password", tokenarray_inmate[i]);
                                     intent_1.putExtra("type", type1);
                                     startActivity(intent_1);
                                 }
+                                else {
+                                    Toast.makeText(getApplicationContext(),"Your token has expired, you will get a new one.",Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(MainActivity.this, otp.class);
+                                    intent.putExtra("Username", myname);
+                                    intent.putExtra("type", type1);
+                                    intent.putExtra("number", myphone);
+                                    intent.putExtra("inmateindex", String.valueOf(inmateindex));
+                                    startActivity(intent);
+                                }
+
 
 
                             } else {
@@ -191,4 +232,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    public long printDifference(Date startDate, Date endDate) {
+        //milliseconds
+        long different = endDate.getTime() - startDate.getTime();
+
+        System.out.println("startDate : " + startDate);
+        System.out.println("endDate : "+ endDate);
+        System.out.println("different : " + different);
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
+        elapsedDays -=1;
+
+        Log.e(String.valueOf(elapsedDays), "onClick: Checking for date");
+        return elapsedDays;
+    }
+
 }

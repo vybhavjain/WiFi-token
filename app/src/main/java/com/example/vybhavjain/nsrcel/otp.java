@@ -58,7 +58,7 @@ public class otp extends AppCompatActivity {
     JSONObject jsonObject;
     String phonenumber_real = "";
     int count=0;
-    String[] tokenarray , userName;
+    String[] tokenarray , userName , validity;
     String inmateindex;
     int checker=0;
     String formattedDate;
@@ -140,6 +140,7 @@ public class otp extends AppCompatActivity {
                         obj = (JSONArray) (jsonObject.get("user"));
                         tokenarray = new String[obj.length()];
                         userName = new String[obj.length()];
+                        validity = new String[obj.length()];
                         if (tokenarray.length < 3) {
                             Toast.makeText(otp.this, "Please contact help desk for token .", Toast.LENGTH_LONG).show();
                         }
@@ -151,6 +152,8 @@ public class otp extends AppCompatActivity {
                                     jsonObject = (JSONObject) (obj.get(j));
                                     String token = jsonObject.optString("token");
                                     String userName_real = jsonObject.optString("username");
+                                    String validity_token_guest = jsonObject.optString("validity");
+                                    validity[j] = validity_token_guest;
                                     userName[j] = userName_real;
                                     tokenarray[j] = token;
                                     Log.e(tokenarray[j], "onResponse: name");
@@ -223,6 +226,7 @@ public class otp extends AppCompatActivity {
                         obj = (JSONArray) (jsonObject.get("user"));
                         tokenarray = new String[obj.length()];
                         userName = new String[obj.length()];
+                        validity = new String[obj.length()];
                         if (tokenarray.length < 4)
                             Toast.makeText(otp.this, "Please contact help desk for token .", Toast.LENGTH_LONG).show();
                         else {
@@ -232,6 +236,8 @@ public class otp extends AppCompatActivity {
                                     jsonObject = (JSONObject) (obj.get(j));
                                     String token = jsonObject.optString("token");
                                     String userName_real = jsonObject.optString("username");
+                                    String validity_token = jsonObject.optString("validity");
+                                    validity[j] = validity_token;
                                     tokenarray[j] = token;
                                     userName[j] = userName_real;
                                     Log.e(tokenarray[j], "onResponse: name");
@@ -326,7 +332,7 @@ public class otp extends AppCompatActivity {
                                             hashMap.put("token", password_real); // added refernce
                                             hashMap.put("date", formattedDate);
                                             hashMap.put("username", Username_real1);
-
+                                            hashMap.put("validity", validity[0]);
                                             return hashMap;
 
                                         }
@@ -372,7 +378,7 @@ public class otp extends AppCompatActivity {
                                             hashMap.put("token",password_real); // added refernce
                                             hashMap.put("date", formattedDate);
                                             hashMap.put("UserName", Username_real1);
-
+                                            hashMap.put("validity", validity[0]);
                                             return hashMap;
 
                                         }

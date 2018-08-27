@@ -40,7 +40,7 @@ public class login extends AppCompatActivity {
     Button b;
     int flag1 = 0;
     JSONObject jsonArray;
-    String[] emailarray , tokenarray , user_name_array;
+    String[] emailarray , tokenarray , user_name_array , validity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +86,7 @@ public class login extends AppCompatActivity {
                                 emailarray = new String[obj.length()];
                                 tokenarray = new String[obj.length()];
                                 user_name_array = new String[obj.length()];
+                                validity = new String[obj.length()];
                                 for (int j = 0; j < obj.length(); j++) {
                                     JSONObject jsonObject = null;
                                     try {
@@ -93,6 +94,8 @@ public class login extends AppCompatActivity {
                                         String email = jsonObject.optString("email");
                                         String token = jsonObject.optString("token");
                                         String user_name = jsonObject.optString("username");
+                                        String validity_token_guest = jsonObject.optString("validity");
+                                        validity[j] = validity_token_guest;
                                         user_name_array[j] = user_name;
                                         emailarray[j] = email;
                                         tokenarray[j] = token;
@@ -111,6 +114,8 @@ public class login extends AppCompatActivity {
                                         flag1 = 1;
                                         password = tokenarray[i];
                                         type1 = "g";
+                                        String validity_today = validity[i];
+                                        Log.e( validity_today,"onResponse: validity" );
                                         Intent intent_here = new Intent(login.this , Ticket.class);
                                         intent_here.putExtra("Username", user_name_array[i]);
                                         intent_here.putExtra("Password", password);
