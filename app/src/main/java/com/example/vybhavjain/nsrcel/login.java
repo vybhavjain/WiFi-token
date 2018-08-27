@@ -40,7 +40,7 @@ public class login extends AppCompatActivity {
     Button b;
     int flag1 = 0;
     JSONObject jsonArray;
-    String[] emailarray , tokenarray;
+    String[] emailarray , tokenarray , user_name_array;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +85,15 @@ public class login extends AppCompatActivity {
                                 obj = (JSONArray) (jsonArray.get("user"));
                                 emailarray = new String[obj.length()];
                                 tokenarray = new String[obj.length()];
+                                user_name_array = new String[obj.length()];
                                 for (int j = 0; j < obj.length(); j++) {
                                     JSONObject jsonObject = null;
                                     try {
                                         jsonObject = (JSONObject) (obj.get(j));
                                         String email = jsonObject.optString("email");
                                         String token = jsonObject.optString("token");
+                                        String user_name = jsonObject.optString("username");
+                                        user_name_array[j] = user_name;
                                         emailarray[j] = email;
                                         tokenarray[j] = token;
                                         Log.e( emailarray[j],"onResponse: name" );
@@ -109,7 +112,7 @@ public class login extends AppCompatActivity {
                                         password = tokenarray[i];
                                         type1 = "g";
                                         Intent intent_here = new Intent(login.this , Ticket.class);
-                                        intent_here.putExtra("Username", myname);
+                                        intent_here.putExtra("Username", user_name_array[i]);
                                         intent_here.putExtra("Password", password);
                                         intent_here.putExtra("type", type1);
                                         startActivity(intent_here);
