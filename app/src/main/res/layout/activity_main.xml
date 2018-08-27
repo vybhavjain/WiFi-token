@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,24 +8,28 @@
     tools:context=".MainActivity">
 
     <ImageView
+        android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="146dp"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo1" />
 
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="Name"
-        android:layout_marginLeft="20dp"/>
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/phonenumber"
+        android:layout_marginTop="182dp"
+        android:text="Name" />
 
     <EditText
+        android:layout_below="@+id/textView"
         android:id="@+id/myname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <TextView
+        android:layout_below="@+id/myname"
         android:id="@+id/phonenumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,11 +37,13 @@
         android:layout_marginLeft="20dp"
         />
     <EditText
+        android:layout_below="@+id/phonenumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:id="@+id/myphone"/>
     <Button
+        android:layout_below="@+id/myphone"
         android:layout_width="match_parent"
         android:layout_marginTop="16dp"
         android:layout_height="wrap_content"
@@ -45,6 +51,7 @@
         android:id="@+id/submit"/>
 
     <TextView
+        android:layout_below="@+id/submit"
         android:id="@+id/guest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,4 +62,4 @@
         android:textColor="#000"
         android:textSize="18sp" />
 
-</LinearLayout>
+</RelativeLayout>

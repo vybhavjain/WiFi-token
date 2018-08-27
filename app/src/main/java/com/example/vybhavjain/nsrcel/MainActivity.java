@@ -36,11 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sharedpreferences;
     EditText name , phonenumber;
-    String[] namesarray , phonenumberarray , tokenarray_inmate , user_namearray , validity, date_inmate;
+    String[] namesarray , phonenumberarray ,email_inmate, tokenarray_inmate , user_namearray , validity, date_inmate;
     Button b;
-    String password , type1, formattedDate , remaining_days;
+    String password , type1,expired_password_inmate,expired_username_inmate, formattedDate , remaining_days,expired_email_inmate;
     private static final String URL = "https://script.googleusercontent.com/macros/echo?user_content_key=suSzdJxXBfM90snBivmZZzp7yyuJTu_Ya4qMQlPFcML-pBzHhBRDE2mBs94zfMF0YZTgAp6V9gN2KL3orU8MoFS3W9lvaBJRm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnCSxg59lhMImqfINVDyVfMjQ7I1hBwkBHvqa3IcR2vWqYG6WaOXNcFwu1QPxwNwfZ0WY2nZ7HPw5&lib=Mpmp6VZVIcgylJlJbX0MEHL866zndRzds";
     private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
+    private static final String URL_INMATE_EXPIRED = "https://script.google.com/macros/s/AKfycbzZxTDu9kbw8veeKBroSdqVwI8BB_XSjG1oevpMgEZ4_FgUkTI/exec";
     private RequestQueue requestQueue;
     private StringRequest request;
     JSONObject jsonArray;
@@ -83,12 +84,14 @@ public class MainActivity extends AppCompatActivity {
                         user_namearray = new String[obj.length()];
                         validity = new String[obj.length()];
                         date_inmate = new String[obj.length()];
+                        email_inmate = new String[obj.length()];
                         for (int j = 0; j < obj.length(); j++) {
                             JSONObject jsonObject = null;
                             try {
                                 jsonObject = (JSONObject) (obj.get(j));
                                 String name = jsonObject.optString("name");
                                 String phonenumberget = jsonObject.optString("phone_number");
+                                String email = jsonObject.optString("email");
                                 String tokenget = jsonObject.optString("token_inmate");
                                 String user_name = jsonObject.optString("username");
                                 String validity_token = jsonObject.optString("validity");
@@ -96,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                                 date_inmate[j]= date;
                                 validity[j] = validity_token;
                                 user_namearray[j] = user_name;
+                                email_inmate[j]=email;
                                 namesarray[j] = name;
                                 phonenumberarray[j] = phonenumberget;
                                 tokenarray_inmate[j] = tokenget;
@@ -148,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 final String myname = name.getText().toString().trim();
                 Log.e(myname, "onClick: name");
                 String myphone = phonenumber.getText().toString().trim();
+                final String phone_expired_inmate=myphone;
                 int flag = 0;
                 final String id = "1L-8iuRCWLaHkwsAbTOLuni3sfJFpXe51DYeOSUSA5Cw";
                 if (myname.length() == 0 || myphone.length() == 0) {
@@ -161,7 +166,18 @@ public class MainActivity extends AppCompatActivity {
                                 myphone = "+91" + myphone;
                                 inmateindex = i + 2;
                                 type1 = "i";
-                                String login_date = date_inmate[i].substring(0,10);
+                                expired_password_inmate=tokenarray_inmate[i];
+                                expired_username_inmate=user_namearray[i];
+                                expired_email_inmate=email_inmate[i];
+                                Log.e(expired_email_inmate, "onClick: Given up");
+                                final String login_date = date_inmate[i].substring(0,10);
+                                Log.e( login_date, "onClick: login_date" );
+                                String day = date_inmate[i].substring(8,10);
+                                Log.e( day, "onClick: day" );
+                                day=String.valueOf(Integer.parseInt(day)+1);
+                                Log.e( day, "onClick: day_new" );
+                              //  login_date=login_date + day;
+                                final String login_date2=login_date;
                                 String validity_of_token = validity[i];
                                 Log.e( validity_of_token,"onClick: validity" );
                                 Date c = Calendar.getInstance().getTime();
@@ -198,12 +214,54 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 else {
                                     Toast.makeText(getApplicationContext(),"Your token has expired, you will get a new one.",Toast.LENGTH_LONG).show();
+                                    request = new StringRequest(Request.Method.POST, URL_INMATE_EXPIRED , new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+
+                                            try {
+                                                String flag = response;
+
+
+
+
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+                                        }
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+
+                                        }
+                                    }) {
+                                        @Override
+                                        protected Map<String, String> getParams() throws AuthFailureError {
+                                            Log.e(expired_email_inmate, "getParams: One last time");
+                                            HashMap<String, String> hashMap = new HashMap<String, String>();
+                                            hashMap.put("token",expired_password_inmate);
+                                            hashMap.put("date", login_date);
+                                            hashMap.put("UserName",expired_username_inmate );
+                                            hashMap.put("accountname", myname);
+                                            hashMap.put("number", phone_expired_inmate);
+                                            hashMap.put("email", expired_email_inmate);
+
+                                            return hashMap;
+
+                                        }
+                                    };
+
+                                    requestQueue.add(request);
                                     Intent intent = new Intent(MainActivity.this, otp.class);
                                     intent.putExtra("Username", myname);
                                     intent.putExtra("type", type1);
                                     intent.putExtra("number", myphone);
                                     intent.putExtra("inmateindex", String.valueOf(inmateindex));
                                     startActivity(intent);
+
+
                                 }
 
 
