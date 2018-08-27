@@ -24,6 +24,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -34,13 +38,13 @@ public class login extends AppCompatActivity {
     private static final String URL_check = "https://script.google.com/macros/s/AKfycbxvD8zvWeIB9ZnoOGvkAA0eBRksFxBJENlHJviRvyP5FxzV2fc/exec";
     private RequestQueue requestQueue;
     private StringRequest request;
-    String password , type1;
+    String password , type1, formattedDate,login_date,remaining_days;
     int guest;
     EditText name , phonenumber , email , reference;   // added email, refered person
     Button b;
     int flag1 = 0;
     JSONObject jsonArray;
-    String[] emailarray , tokenarray , user_name_array , validity;
+    String[] emailarray , tokenarray , user_name_array , validity, logindate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +91,7 @@ public class login extends AppCompatActivity {
                                 tokenarray = new String[obj.length()];
                                 user_name_array = new String[obj.length()];
                                 validity = new String[obj.length()];
+                                logindate = new String[obj.length()];
                                 for (int j = 0; j < obj.length(); j++) {
                                     JSONObject jsonObject = null;
                                     try {
@@ -95,7 +100,9 @@ public class login extends AppCompatActivity {
                                         String token = jsonObject.optString("token");
                                         String user_name = jsonObject.optString("username");
                                         String validity_token_guest = jsonObject.optString("validity");
+                                        String login= jsonObject.optString("date");
                                         validity[j] = validity_token_guest;
+                                        logindate[j]= login;
                                         user_name_array[j] = user_name;
                                         emailarray[j] = email;
                                         tokenarray[j] = token;
@@ -106,6 +113,13 @@ public class login extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                 }
+                                Date c = Calendar.getInstance().getTime();
+                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                                formattedDate = df.format(c);
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+
+
 
                                 for( int i = 0; i < emailarray.length; i++ )
                                 {
@@ -114,14 +128,36 @@ public class login extends AppCompatActivity {
                                         flag1 = 1;
                                         password = tokenarray[i];
                                         type1 = "g";
+                                        login_date=logindate[i].substring(0,10);
                                         String validity_today = validity[i];
-                                        Log.e( validity_today,"onResponse: validity" );
-                                        Intent intent_here = new Intent(login.this , Ticket.class);
-                                        intent_here.putExtra("Username", user_name_array[i]);
-                                        intent_here.putExtra("Password", password);
-                                        intent_here.putExtra("type", type1);
-                                        startActivity(intent_here);
+                                        try {
+                                            Date date1 = simpleDateFormat.parse(login_date);
+                                            Date date2 = simpleDateFormat.parse(formattedDate);
 
+                                            long days= printDifference(date1, date2);
+                                            remaining_days=String.valueOf(days);
+
+
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        if(Integer.parseInt(remaining_days) <= Integer.parseInt(validity_today)) {
+                                            Log.e(validity_today, "onResponse: validity");
+                                            Intent intent_here = new Intent(login.this, Ticket.class);
+                                            intent_here.putExtra("Username", user_name_array[i]);
+                                            intent_here.putExtra("Password", password);
+                                            intent_here.putExtra("type", type1);
+                                            startActivity(intent_here);
+                                        }
+                                        else {
+                                            Toast.makeText(getApplicationContext(),"Your token has expired, you will get a new one.",Toast.LENGTH_LONG).show();
+                                            Intent intent = new Intent(login.this , otp.class);
+                                            intent.putExtra("Username", myname);
+                                            intent.putExtra("type", type1);
+                                            intent.putExtra("email", emailID);
+                                            intent.putExtra("reference", myreference);
+                                            startActivity(intent);
+                                        }
                                     }
                                 }
 
@@ -180,4 +216,21 @@ public class login extends AppCompatActivity {
         });
 
     }
+    public long printDifference(Date startDate, Date endDate) {
+        //milliseconds
+        long different = endDate.getTime() - startDate.getTime();
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
+        elapsedDays -=1;
+
+        Log.e(String.valueOf(elapsedDays), "onClick: Checking for date");
+        return elapsedDays;
+    }
+
 }

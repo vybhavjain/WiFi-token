@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                                     intent.putExtra("number", myphone);
                                     intent.putExtra("inmateindex", String.valueOf(inmateindex));
                                     startActivity(intent);
-                                } else if(Integer.parseInt(remaining_days) <= 2) {
+                                } else if(Integer.parseInt(remaining_days) <= Integer.parseInt(validity_of_token)) {
                                     Intent intent_1 = new Intent(MainActivity.this, Ticket.class);
                                     intent_1.putExtra("Username",user_namearray[i]);
                                     intent_1.putExtra("Password", tokenarray_inmate[i]);
