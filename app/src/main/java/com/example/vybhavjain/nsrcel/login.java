@@ -36,15 +36,17 @@ public class login extends AppCompatActivity {
     SharedPreferences sharedpreferences;
     private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
     private static final String URL_check = "https://script.google.com/macros/s/AKfycbxvD8zvWeIB9ZnoOGvkAA0eBRksFxBJENlHJviRvyP5FxzV2fc/exec";
+    private static final String URL_GUEST_EXPIRED="https://script.google.com/macros/s/AKfycbwdlV-qkm3_KBd7ZJipnb-KuQak5G7f2tykYY7CSDc8oPaL7oBe/exec";
+    private static final String URL_Guest_delete = "https://script.google.com/macros/s/AKfycbzEgldvaQUv85d4wPAIv2QvMG8oHJG-tqcSreyl62e3zfu7dw8/exec";
     private RequestQueue requestQueue;
     private StringRequest request;
-    String password , type1, formattedDate,login_date,remaining_days;
+    String password , type1, formattedDate,login_date,remaining_days,Expired_username,Expired_phonenumber,expired_email_inmate;
     int guest;
     EditText name , phonenumber , email , reference;   // added email, refered person
     Button b;
     int flag1 = 0;
     JSONObject jsonArray;
-    String[] emailarray , tokenarray , user_name_array , validity, logindate;
+    String[] emailarray , tokenarray , user_name_array , validity, logindate,phonenumber_array;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,7 @@ public class login extends AppCompatActivity {
                                 emailarray = new String[obj.length()];
                                 tokenarray = new String[obj.length()];
                                 user_name_array = new String[obj.length()];
+                                phonenumber_array = new String[obj.length()];
                                 validity = new String[obj.length()];
                                 logindate = new String[obj.length()];
                                 for (int j = 0; j < obj.length(); j++) {
@@ -100,9 +103,11 @@ public class login extends AppCompatActivity {
                                         String token = jsonObject.optString("token");
                                         String user_name = jsonObject.optString("username");
                                         String validity_token_guest = jsonObject.optString("validity");
+                                        String phonenumeber = jsonObject.optString("phonenumber");
                                         String login= jsonObject.optString("date");
                                         validity[j] = validity_token_guest;
                                         logindate[j]= login;
+                                        phonenumber_array[j]=phonenumeber;
                                         user_name_array[j] = user_name;
                                         emailarray[j] = email;
                                         tokenarray[j] = token;
@@ -128,7 +133,11 @@ public class login extends AppCompatActivity {
                                         flag1 = 1;
                                         password = tokenarray[i];
                                         type1 = "g";
+                                        Expired_username= user_name_array[i];
+                                        Expired_phonenumber= phonenumber_array[i];
+                                        expired_email_inmate=emailarray[i];
                                         login_date=logindate[i].substring(0,10);
+                                        final String index_delete = String.valueOf(i+2);
                                         String validity_today = validity[i];
                                         try {
                                             Date date1 = simpleDateFormat.parse(login_date);
@@ -151,6 +160,91 @@ public class login extends AppCompatActivity {
                                         }
                                         else {
                                             Toast.makeText(getApplicationContext(),"Your token has expired, you will get a new one.",Toast.LENGTH_LONG).show();
+                                            request = new StringRequest(Request.Method.POST, URL_GUEST_EXPIRED , new Response.Listener<String>() {
+                                                @Override
+                                                public void onResponse(String response) {
+
+                                                    try {
+                                                        String flag = response;
+
+
+
+
+
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
+
+                                                }
+                                            }, new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+
+                                                }
+                                            }) {
+                                                @Override
+                                                protected Map<String, String> getParams() throws AuthFailureError {
+                                                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                                                    hashMap.put("token",password);
+                                                    hashMap.put("date", login_date);
+                                                    hashMap.put("UserName",Expired_username);
+                                                    hashMap.put("accountname", myname);
+                                                    hashMap.put("number",Expired_phonenumber);
+                                                    Log.e(Expired_phonenumber, "getParams: Phone number to be passed in expired guest page");
+                                                    hashMap.put("email", expired_email_inmate);
+
+                                                    return hashMap;
+
+                                                }
+                                            };
+
+                                            requestQueue.add(request);
+
+                                            request = new StringRequest(Request.Method.POST, URL_Guest_delete , new Response.Listener<String>() {
+                                                @Override
+                                                public void onResponse(String response) {
+
+                                                    try {
+                                                        String flag = response;
+
+
+
+
+
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
+
+                                                }
+                                            }, new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+
+                                                }
+                                            }) {
+                                                @Override
+                                                protected Map<String, String> getParams() throws AuthFailureError {
+                                                    Log.e(expired_email_inmate, "getParams: One last time");
+                                                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                                                    hashMap.put("token_index",index_delete);
+
+
+                                                    return hashMap;
+
+                                                }
+                                            };
+
+                                            requestQueue.add(request);
+
+
+
+
+
+
+
+
                                             Intent intent = new Intent(login.this , otp.class);
                                             intent.putExtra("Username", myname);
                                             intent.putExtra("type", type1);
@@ -192,6 +286,8 @@ public class login extends AppCompatActivity {
                 };
 
                 requestQueue.add(request);
+
+
 
                 guest += 1;
                 editor.putString("count_var", String.valueOf(guest));

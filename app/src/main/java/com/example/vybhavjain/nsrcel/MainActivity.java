@@ -169,15 +169,17 @@ public class MainActivity extends AppCompatActivity {
                                 expired_password_inmate=tokenarray_inmate[i];
                                 expired_username_inmate=user_namearray[i];
                                 expired_email_inmate=email_inmate[i];
+                                Log.e(date_inmate[i], "onClick:Before substringing...... ");
                                 final String login_date = date_inmate[i].substring(0,10);
                                 Log.e( login_date, "onClick: login_date" );
                                 String validity_of_token = validity[i];
                                 Log.e( validity_of_token,"onClick: validity" );
                                 Date c = Calendar.getInstance().getTime();
-                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                                SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
                                 formattedDate = df.format(c);
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+                                Log.e(login_date, "onClick:  this is the login date");
+                                Log.e(formattedDate, "onClick: No clue lol ");
 
                                 try {
                                     Date date1 = simpleDateFormat.parse(login_date);
