@@ -36,6 +36,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.*;
+import com.example.vybhavjain.nsrcel.Url_info.*;
+
+import static com.example.vybhavjain.nsrcel.Url_info.URL_guest;
+import static com.example.vybhavjain.nsrcel.Url_info.URL_inmate;
+import static com.example.vybhavjain.nsrcel.Url_info.token_delete;
+import static com.example.vybhavjain.nsrcel.Url_info.token_delete_inmate;
+import static com.example.vybhavjain.nsrcel.Url_info.token_url;
+import static com.example.vybhavjain.nsrcel.Url_info.token_url_inmate;
 
 public class otp extends AppCompatActivity {
 
@@ -62,12 +70,6 @@ public class otp extends AppCompatActivity {
     String inmateindex;
     int checker=0;
     String formattedDate;
-    private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
-    private static final String URL_inmate = "https://script.google.com/macros/s/AKfycbysQjfTssbAb7rBb7nvebEos4Y0ijLSTZF3HCSY9GV7zrIAEwE/exec";
-    private static final String token_url = "https://script.google.com/macros/s/AKfycbzvyt2QaXejNTRsVggbcZ7CI5m_Tj0hL2Q6KwQBHw3JXgdNtHw/exec";
-    private static final String token_delete = "https://script.google.com/macros/s/AKfycbxcR6q0-HCjitqoVzrzavcbS1tLJoHbzkBc6OcpyNbO4ZWo8dGK/exec";
-    private static final String token_url_inmate = "https://script.google.com/macros/s/AKfycbzc2chHOPYzRtGE81CLq21pcOBdymR3F6qdXsB3Xpy5yZDQyt0/exec";
-    private static final String token_delete_inmate = "https://script.google.com/macros/s/AKfycbwRZV5eZuwfl-3C7AJl5iTjxH1NeEFwkw_LoTVxE5D4298MiI0/exec";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

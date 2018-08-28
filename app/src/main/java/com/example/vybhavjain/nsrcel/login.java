@@ -31,13 +31,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import com.example.vybhavjain.nsrcel.Url_info.*;
+
+import static com.example.vybhavjain.nsrcel.Url_info.URL_GUEST_EXPIRED;
+import static com.example.vybhavjain.nsrcel.Url_info.URL_Guest_delete;
+import static com.example.vybhavjain.nsrcel.Url_info.URL_check;
 
 public class login extends AppCompatActivity {
     SharedPreferences sharedpreferences;
-    private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
-    private static final String URL_check = "https://script.google.com/macros/s/AKfycbxvD8zvWeIB9ZnoOGvkAA0eBRksFxBJENlHJviRvyP5FxzV2fc/exec";
-    private static final String URL_GUEST_EXPIRED="https://script.google.com/macros/s/AKfycbwdlV-qkm3_KBd7ZJipnb-KuQak5G7f2tykYY7CSDc8oPaL7oBe/exec";
-    private static final String URL_Guest_delete = "https://script.google.com/macros/s/AKfycbzEgldvaQUv85d4wPAIv2QvMG8oHJG-tqcSreyl62e3zfu7dw8/exec";
     private RequestQueue requestQueue;
     private StringRequest request;
     String password , type1, formattedDate,login_date,remaining_days,Expired_username,Expired_phonenumber,expired_email_inmate;

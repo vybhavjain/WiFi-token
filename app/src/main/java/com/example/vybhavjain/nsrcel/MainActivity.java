@@ -31,6 +31,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import com.example.vybhavjain.nsrcel.Url_info.*;
+
+import static com.example.vybhavjain.nsrcel.Url_info.URL;
+import static com.example.vybhavjain.nsrcel.Url_info.URL_INMATE_EXPIRED;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,9 +43,6 @@ public class MainActivity extends AppCompatActivity {
     String[] namesarray , phonenumberarray ,email_inmate, tokenarray_inmate , user_namearray , validity, date_inmate;
     Button b;
     String password , type1,expired_password_inmate,expired_username_inmate, formattedDate , remaining_days,expired_email_inmate;
-    private static final String URL = "https://script.googleusercontent.com/macros/echo?user_content_key=suSzdJxXBfM90snBivmZZzp7yyuJTu_Ya4qMQlPFcML-pBzHhBRDE2mBs94zfMF0YZTgAp6V9gN2KL3orU8MoFS3W9lvaBJRm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnCSxg59lhMImqfINVDyVfMjQ7I1hBwkBHvqa3IcR2vWqYG6WaOXNcFwu1QPxwNwfZ0WY2nZ7HPw5&lib=Mpmp6VZVIcgylJlJbX0MEHL866zndRzds";
-    private static final String URL_guest = "https://script.google.com/macros/s/AKfycbxv-7ZjjQ9PYNDvXRn0Z-RZ8doJNYzOS0D26YS0caxmtdtM2fUR/exec";
-    private static final String URL_INMATE_EXPIRED = "https://script.google.com/macros/s/AKfycbzZxTDu9kbw8veeKBroSdqVwI8BB_XSjG1oevpMgEZ4_FgUkTI/exec";
     private RequestQueue requestQueue;
     private StringRequest request;
     JSONObject jsonArray;
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),"Please check your internet connection .",Toast.LENGTH_LONG).show();
 
             }
         }) {
