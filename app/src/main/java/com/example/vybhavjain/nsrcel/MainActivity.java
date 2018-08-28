@@ -169,15 +169,8 @@ public class MainActivity extends AppCompatActivity {
                                 expired_password_inmate=tokenarray_inmate[i];
                                 expired_username_inmate=user_namearray[i];
                                 expired_email_inmate=email_inmate[i];
-                                Log.e(expired_email_inmate, "onClick: Given up");
                                 final String login_date = date_inmate[i].substring(0,10);
                                 Log.e( login_date, "onClick: login_date" );
-                                String day = date_inmate[i].substring(8,10);
-                                Log.e( day, "onClick: day" );
-                                day=String.valueOf(Integer.parseInt(day)+1);
-                                Log.e( day, "onClick: day_new" );
-                              //  login_date=login_date + day;
-                                final String login_date2=login_date;
                                 String validity_of_token = validity[i];
                                 Log.e( validity_of_token,"onClick: validity" );
                                 Date c = Calendar.getInstance().getTime();
@@ -243,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
                                             HashMap<String, String> hashMap = new HashMap<String, String>();
                                             hashMap.put("token",expired_password_inmate);
                                             hashMap.put("date", login_date);
+                                            Log.e(login_date, "getParams: lllllllllllllll");
                                             hashMap.put("UserName",expired_username_inmate );
                                             hashMap.put("accountname", myname);
                                             hashMap.put("number", phone_expired_inmate);
