@@ -164,102 +164,107 @@ public class MainActivity extends AppCompatActivity {
                         Log.e(String.valueOf(myname.equals(namesarray[i])), "onClick: comparison");
                         if (namesarray[i].equalsIgnoreCase(myname)) {
                             if (phonenumberarray[i].equals(myphone)) {
-                                flag = 1;
-                                myphone = "+91" + myphone;
-                                inmateindex = i + 2;
-                                type1 = "i";
-                                expired_password_inmate=tokenarray_inmate[i];
-                                expired_username_inmate=user_namearray[i];
-                                expired_email_inmate=email_inmate[i];
-                                Log.e(date_inmate[i], "onClick:Before substringing...... ");
-                                final String login_date = date_inmate[i].substring(0,10);
-                                Log.e( login_date, "onClick: login_date" );
-                                String validity_of_token = validity[i];
-                                Log.e( validity_of_token,"onClick: validity" );
-                                Date c = Calendar.getInstance().getTime();
-                                SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
-                                formattedDate = df.format(c);
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
-                                Log.e(login_date, "onClick:  this is the login date");
-                                Log.e(formattedDate, "onClick: No clue lol ");
+                                if( tokenarray_inmate[i].length() != 0 ) {
+                                    flag = 1;
+                                    myphone = "+91" + myphone;
+                                    inmateindex = i + 2;
+                                    type1 = "i";
+                                    expired_password_inmate = tokenarray_inmate[i];
+                                    expired_username_inmate = user_namearray[i];
+                                    expired_email_inmate = email_inmate[i];
+                                    Log.e(date_inmate[i], "onClick:Before substringing...... ");
+                                    final String login_date = date_inmate[i].substring(0, 10);
+                                    Log.e(login_date, "onClick: login_date");
+                                    String validity_of_token = validity[i];
+                                    Log.e(validity_of_token, "onClick: validity");
+                                    Date c = Calendar.getInstance().getTime();
+                                    SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+                                    formattedDate = df.format(c);
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+                                    Log.e(login_date, "onClick:  this is the login date");
+                                    Log.e(formattedDate, "onClick: No clue lol ");
 
-                                try {
-                                    Date date1 = simpleDateFormat.parse(login_date);
-                                    Date date2 = simpleDateFormat.parse(formattedDate);
+                                    try {
+                                        Date date1 = simpleDateFormat.parse(login_date);
+                                        Date date2 = simpleDateFormat.parse(formattedDate);
 
-                                   long days= printDifference(date1, date2);
-                                   remaining_days=String.valueOf(days);
-
-
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-
-                                if (tokenarray_inmate[i].length() == 0) {
-                                    Intent intent = new Intent(MainActivity.this, otp.class);
-                                    intent.putExtra("Username", myname);
-                                    intent.putExtra("type", type1);
-                                    intent.putExtra("number", myphone);
-                                    intent.putExtra("inmateindex", String.valueOf(inmateindex));
-                                    startActivity(intent);
-                                } else if(Integer.parseInt(remaining_days) <= Integer.parseInt(validity_of_token)) {
-                                    Intent intent_1 = new Intent(MainActivity.this, Ticket.class);
-                                    intent_1.putExtra("Username",user_namearray[i]);
-                                    intent_1.putExtra("Password", tokenarray_inmate[i]);
-                                    intent_1.putExtra("type", type1);
-                                    startActivity(intent_1);
-                                }
-                                else {
-                                    Toast.makeText(getApplicationContext(),"Your token has expired, you will get a new one.",Toast.LENGTH_LONG).show();
-                                    request = new StringRequest(Request.Method.POST, URL_INMATE_EXPIRED , new Response.Listener<String>() {
-                                        @Override
-                                        public void onResponse(String response) {
-
-                                            try {
-                                                String flag = response;
+                                        long days = printDifference(date1, date2);
+                                        remaining_days = String.valueOf(days);
 
 
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
 
 
+                                    if (Integer.parseInt(remaining_days) <= Integer.parseInt(validity_of_token)) {
+                                        Intent intent_1 = new Intent(MainActivity.this, Ticket.class);
+                                        intent_1.putExtra("Username", user_namearray[i]);
+                                        intent_1.putExtra("Password", tokenarray_inmate[i]);
+                                        intent_1.putExtra("type", type1);
+                                        intent_1.putExtra("number", myphone);
+                                        startActivity(intent_1);
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Your token has expired, you will get a new one.", Toast.LENGTH_LONG).show();
+                                        request = new StringRequest(Request.Method.POST, URL_INMATE_EXPIRED, new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String response) {
 
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
+                                                try {
+                                                    String flag = response;
+
+
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
+
                                             }
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+
+                                            }
+                                        }) {
+                                            @Override
+                                            protected Map<String, String> getParams() throws AuthFailureError {
+                                                Log.e(expired_email_inmate, "getParams: One last time");
+                                                HashMap<String, String> hashMap = new HashMap<String, String>();
+                                                hashMap.put("token", expired_password_inmate);
+                                                hashMap.put("date", login_date);
+                                                Log.e(login_date, "getParams: lllllllllllllll");
+                                                hashMap.put("UserName", expired_username_inmate);
+                                                hashMap.put("accountname", myname);
+                                                hashMap.put("number", phone_expired_inmate);
+                                                hashMap.put("email", expired_email_inmate);
+
+                                                return hashMap;
+
+                                            }
+                                        };
+
+                                        requestQueue.add(request);
+                                        Intent intent = new Intent(MainActivity.this, otp.class);
+                                        intent.putExtra("Username", myname);
+                                        intent.putExtra("type", type1);
+                                        intent.putExtra("number", myphone);
+                                        intent.putExtra("inmateindex", String.valueOf(inmateindex));
+                                        startActivity(intent);
 
 
-                                        }
-                                    }, new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-
-                                        }
-                                    }) {
-                                        @Override
-                                        protected Map<String, String> getParams() throws AuthFailureError {
-                                            Log.e(expired_email_inmate, "getParams: One last time");
-                                            HashMap<String, String> hashMap = new HashMap<String, String>();
-                                            hashMap.put("token",expired_password_inmate);
-                                            hashMap.put("date", login_date);
-                                            Log.e(login_date, "getParams: lllllllllllllll");
-                                            hashMap.put("UserName",expired_username_inmate );
-                                            hashMap.put("accountname", myname);
-                                            hashMap.put("number", phone_expired_inmate);
-                                            hashMap.put("email", expired_email_inmate);
-
-                                            return hashMap;
-
-                                        }
-                                    };
-
-                                    requestQueue.add(request);
+                                    }
+                                }
+                                else if(tokenarray_inmate[i].length() == 0) {
+                                    type1 = "i";
+                                    myphone = "+91" + myphone;
+                                    inmateindex = i + 2;
+                                    flag = 1;
                                     Intent intent = new Intent(MainActivity.this, otp.class);
                                     intent.putExtra("Username", myname);
                                     intent.putExtra("type", type1);
                                     intent.putExtra("number", myphone);
                                     intent.putExtra("inmateindex", String.valueOf(inmateindex));
                                     startActivity(intent);
-
-
                                 }
 
 

@@ -157,6 +157,7 @@ public class login extends AppCompatActivity {
                                             intent_here.putExtra("Username", user_name_array[i]);
                                             intent_here.putExtra("Password", password);
                                             intent_here.putExtra("type", type1);
+                                            intent_here.putExtra("number", Expired_phonenumber);
                                             startActivity(intent_here);
                                         }
                                         else {

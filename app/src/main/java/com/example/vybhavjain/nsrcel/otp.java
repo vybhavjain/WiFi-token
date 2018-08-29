@@ -298,6 +298,7 @@ public class otp extends AppCompatActivity {
                             intent.putExtra("Password", password_real);
                             intent.putExtra("Username", Username_real1);
                             intent.putExtra("type", type);
+                            intent.putExtra("number", phonenumber_real);
                             startActivity(intent);
                             if(type.equals("g")) {
                                 if (emailID.length() != 0 && username.length() != 0 && reference.length() != 0) {
